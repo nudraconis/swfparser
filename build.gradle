@@ -33,7 +33,7 @@ dependencies {
     test fileTree(dir: "$LIB_FLEXUNIT/flexunit", include: '*.jar')
 }
 
-flexHome = FLEX_HOME
+flexHome = System.getenv(SDK_VARIABLE)
 frameworkLinkage = 'none'
 type = 'swc'
 srcDirs = ['../swfdata/src/main/actionscript', '/src/main/actionscript', '../fastByteArray/src/main/actionscript']
