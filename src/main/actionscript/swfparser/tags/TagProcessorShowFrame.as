@@ -54,7 +54,7 @@ package swfparser.tags
 				
 				container.displayObjectsPlacedCount = index;
 				
-				if(index > 1)
+				if(index > 1)// && container.displayObjectsPlacedCount == container.displayObjectsCount)
 					currentDisplayList.sort(sortOnDepth);
 				
 				currentDisplayObject.updateMasks();
