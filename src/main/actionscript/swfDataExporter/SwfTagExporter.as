@@ -1,6 +1,7 @@
 package swfDataExporter 
 {
 	import fastByteArray.FastByteArray;
+	import fastByteArray.IByteArray;
 	import swfdata.dataTags.SwfPackerTag;
 	import swfdata.dataTags.SwfPackerTagDefineSprite;
 	import swfdata.dataTags.SwfPackerTagEnd;
@@ -23,7 +24,7 @@ package swfDataExporter
 			initialize();
 		}
 		
-		public function exportTags(tags:Vector.<SwfPackerTag>, output:FastByteArray):void 
+		public function exportTags(tags:Vector.<SwfPackerTag>, output:IByteArray):void 
 		{
 			var tagsCount:int = tags.length;
 			
@@ -46,7 +47,7 @@ package swfDataExporter
 			
 		}
 		
-		public function importTags(tags:Vector.<SwfPackerTag>, input:FastByteArray):void 
+		public function importTags(tags:Vector.<SwfPackerTag>, input:IByteArray):void 
 		{
 			
 			var index:int = 0;
@@ -62,7 +63,7 @@ package swfDataExporter
 		}
 		
 		[Inline]
-		public final function importSingleTag(input:FastByteArray):SwfPackerTag
+		public final function importSingleTag(input:IByteArray):SwfPackerTag
 		{
 			var tagType:int = input.readInt8();
 			

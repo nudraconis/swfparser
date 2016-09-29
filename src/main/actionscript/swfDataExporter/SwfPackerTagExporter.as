@@ -1,6 +1,7 @@
 package swfDataExporter 
 {
 	import fastByteArray.FastByteArray;
+	import fastByteArray.IByteArray;
 	import swfdata.dataTags.SwfPackerTag;
 	import swfDataExporter.ExporerTypes;
 	
@@ -13,13 +14,13 @@ package swfDataExporter
 			this.type = type;
 		}
 		
-		public function exportTag(tag:SwfPackerTag, output:FastByteArray):void
+		public function exportTag(tag:SwfPackerTag, output:IByteArray):void
 		{
 			
 			output.writeInt8(type);
 		}
 		
-		public function importTag(tag:SwfPackerTag, input:FastByteArray):void
+		public function importTag(tag:SwfPackerTag, input:IByteArray):void
 		{
 			
 		}

@@ -1,6 +1,7 @@
 package swfDataExporter 
 {
 	import fastByteArray.FastByteArray;
+	import fastByteArray.IByteArray;
 	import swfdata.atlas.GenomeTextureAtlas;
 	import swfdata.dataTags.SwfPackerTag;
 	import flash.utils.ByteArray;
@@ -25,7 +26,7 @@ package swfDataExporter
 			
 		}
 		
-		public function exportSwf(atlas:BitmapTextureAtlas, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>, output:FastByteArray):FastByteArray
+		public function exportSwf(atlas:BitmapTextureAtlas, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>, output:IByteArray):IByteArray
 		{
 			output.begin();
 			
@@ -51,7 +52,7 @@ package swfDataExporter
 			return output;
 		}
 		
-		public function importSwfGenome(name:String, input:FastByteArray, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>, format:String):GenomeTextureAtlas
+		public function importSwfGenome(name:String, input:IByteArray, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>, format:String):GenomeTextureAtlas
 		{
 			input.byteArray.inflate();
 			
@@ -66,7 +67,7 @@ package swfDataExporter
 			return atlas;
 		}
 		
-		public function importSwf(input:FastByteArray, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>):BitmapTextureAtlas
+		public function importSwf(input:IByteArray, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>):BitmapTextureAtlas
 		{
 			//input.byteArray.inflate();
 			

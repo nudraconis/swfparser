@@ -1,6 +1,7 @@
 package swfDataExporter 
 {
 	import fastByteArray.FastByteArray;
+	import fastByteArray.IByteArray;
 	import swfdata.dataTags.RawClassSymbol;
 	import swfdata.dataTags.SwfPackerTag;
 	import swfdata.dataTags.SwfPackerTagSymbolClass;
@@ -15,7 +16,7 @@ package swfDataExporter
 			super(ExporerTypes.SYMBOL_CLASS);
 		}
 	
-		override public function exportTag(tag:SwfPackerTag, output:FastByteArray):void 
+		override public function exportTag(tag:SwfPackerTag, output:IByteArray):void 
 		{
 			super.exportTag(tag, output);
 			
@@ -38,7 +39,7 @@ package swfDataExporter
 			}
 		}
 		
-		override public function importTag(tag:SwfPackerTag, input:FastByteArray):void 
+		override public function importTag(tag:SwfPackerTag, input:IByteArray):void 
 		{
 			super.importTag(tag, input);
 			

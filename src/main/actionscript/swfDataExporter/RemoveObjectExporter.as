@@ -1,10 +1,9 @@
 package swfDataExporter 
 {
-	import fastByteArray.FastByteArray;
-	import flash.utils.ByteArray;
+	import fastByteArray.IByteArray;
+	import swfDataExporter.ExporerTypes;
 	import swfdata.dataTags.SwfPackerTag;
 	import swfdata.dataTags.SwfPackerTagRemoveObject;
-	import swfDataExporter.ExporerTypes;
 
 	public class RemoveObjectExporter extends SwfPackerTagExporter
 	{
@@ -14,7 +13,7 @@ package swfDataExporter
 			super(ExporerTypes.REMOVE_OBJECT);
 		}
 		
-		override public function exportTag(tag:SwfPackerTag, output:FastByteArray):void 
+		override public function exportTag(tag:SwfPackerTag, output:IByteArray):void 
 		{
 			super.exportTag(tag, output);
 			
@@ -27,7 +26,7 @@ package swfDataExporter
 			output.writeInt16(tagAsRemoveObject.characterId);
 		}
 		
-		override public function importTag(tag:SwfPackerTag, input:FastByteArray):void 
+		override public function importTag(tag:SwfPackerTag, input:IByteArray):void 
 		{
 			super.importTag(tag, input);
 			

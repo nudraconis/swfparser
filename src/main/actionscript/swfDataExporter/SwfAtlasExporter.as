@@ -2,19 +2,17 @@ package swfDataExporter
 {
 	import fastByteArray.ByteArrayUtils;
 	import fastByteArray.Constants;
-	import fastByteArray.FastByteArray;
+	import fastByteArray.IByteArray;
 	import flash.display.BitmapData;
-	import flash.display3D.Context3DTextureFormat;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
-	import swfdata.atlas.BitmapSubTexture;
+	import swfdata.ShapeData;
+	import swfdata.ShapeLibrary;
 	import swfdata.atlas.BitmapTextureAtlas;
 	import swfdata.atlas.GenomeSubTexture;
 	import swfdata.atlas.GenomeTextureAtlas;
 	import swfdata.atlas.ITexture;
 	import swfdata.atlas.TextureTransform;
-	import swfdata.ShapeData;
-	import swfdata.ShapeLibrary;
 
 	public class SwfAtlasExporter 
 	{
@@ -29,7 +27,7 @@ package swfDataExporter
 			return Math.round(pixels * 100) / 100;
 		}
 		
-		public function readRectangle(input:FastByteArray):Rectangle 
+		public function readRectangle(input:IByteArray):Rectangle 
 		{
 			//var bits:uint = input.readBits(5);
 			
@@ -54,7 +52,7 @@ package swfDataExporter
 			return rect;
 		}
 		
-		public function writeRectangle(rectangle:Rectangle, output:FastByteArray):void 
+		public function writeRectangle(rectangle:Rectangle, output:IByteArray):void 
 		{
 			var xmin:int = rectangle.x * 20;
 			var xmax:int = rectangle.width * 20;
@@ -80,7 +78,7 @@ package swfDataExporter
 			//trace('write rectangle', numBits, rectangle);
 		}
 		
-		public function readTextureTransform(input:FastByteArray):TextureTransform
+		public function readTextureTransform(input:IByteArray):TextureTransform
 		{	
 			var scaleX:Number = 1;
 			var scaleY:Number = 1;
@@ -113,7 +111,7 @@ package swfDataExporter
 			return new TextureTransform(scaleX, scaleY, translateX / 2000, translateY / 2000);
 		}
 		
-		public function writeTextureTransform(transform:TextureTransform, output:FastByteArray):void
+		public function writeTextureTransform(transform:TextureTransform, output:IByteArray):void
 		{
 			var translateX:int = transform.tx * 2000;
 			var translateY:int = transform.ty * 2000;
@@ -162,7 +160,7 @@ package swfDataExporter
 			//trace('wirte trnasform', scaleX, scaleY, transform.tx, transform.ty);
 		}
 		
-		public function exportAtlas(atlas:BitmapTextureAtlas, shapesList:ShapeLibrary, output:FastByteArray):void
+		public function exportAtlas(atlas:BitmapTextureAtlas, shapesList:ShapeLibrary, output:IByteArray):void
 		{
 			var bitmap:BitmapData = atlas.atlasData;
 			var bitmapBytes:ByteArray = bitmap.getPixels(bitmap.rect);
@@ -195,7 +193,7 @@ package swfDataExporter
 			//output.end(false);
 		}
 		
-		public function importAtlasGenome(name:String, input:FastByteArray, shapesList:ShapeLibrary, format:String):GenomeTextureAtlas
+		public function importAtlasGenome(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):GenomeTextureAtlas
 		{
 			var textureAtlas:GenomeTextureAtlas;
 			

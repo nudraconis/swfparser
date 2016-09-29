@@ -1,12 +1,11 @@
 package swfDataExporter 
 {
-	import fastByteArray.FastByteArray;
-	import flash.utils.ByteArray;
-	import swfdata.dataTags.SwfPackerTag;
-	import swfdata.dataTags.SwfPackerTagDefineSprite;
-	import swfdata.FrameData;
+	import fastByteArray.IByteArray;
 	import swfDataExporter.ExporerTypes;
 	import swfDataExporter.SwfTagExporter;
+	import swfdata.FrameData;
+	import swfdata.dataTags.SwfPackerTag;
+	import swfdata.dataTags.SwfPackerTagDefineSprite;
 
 	public class DefineSpriteExporter extends SwfPackerTagExporter
 	{
@@ -29,7 +28,7 @@ package swfDataExporter
 			this.swfTagExporter = swfTagExporter;
 		}
 		
-		override public function exportTag(tag:SwfPackerTag, output:FastByteArray):void 
+		override public function exportTag(tag:SwfPackerTag, output:IByteArray):void 
 		{
 			super.exportTag(tag, output);
 			
@@ -65,7 +64,7 @@ package swfDataExporter
 			swfTagExporter.exportTags(tagAsSpriteDefine.tags, output);
 		}
 		
-		override public function importTag(tag:SwfPackerTag, input:FastByteArray):void 
+		override public function importTag(tag:SwfPackerTag, input:IByteArray):void 
 		{
 			super.importTag(tag, input);
 			

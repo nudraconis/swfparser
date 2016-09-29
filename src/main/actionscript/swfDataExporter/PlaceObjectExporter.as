@@ -1,14 +1,10 @@
 package swfDataExporter 
 {
-	import fastByteArray.ByteArrayUtils;
 	import fastByteArray.Constants;
-	import fastByteArray.FastByteArray;
-	import flash.geom.Matrix;
-	import flash.utils.ByteArray;
-	import flash.utils.getTimer;
+	import fastByteArray.IByteArray;
+	import swfDataExporter.ExporerTypes;
 	import swfdata.dataTags.SwfPackerTag;
 	import swfdata.dataTags.SwfPackerTagPlaceObject;
-	import swfDataExporter.ExporerTypes;
 	import utils.BitMask;
 
 	public class PlaceObjectExporter extends SwfPackerTagExporter
@@ -20,7 +16,7 @@ package swfDataExporter
 			super(ExporerTypes.PLACE_OBJECT);
 		}
 		
-		public final function readMATRIX(input:FastByteArray, tagAsPlaceObject:SwfPackerTagPlaceObject):void
+		public final function readMATRIX(input:IByteArray, tagAsPlaceObject:SwfPackerTagPlaceObject):void
 		{
 			var scaleX:Number = 1;
 			var scaleY:Number = 1;
@@ -61,7 +57,7 @@ package swfDataExporter
 			tagAsPlaceObject.setMatrix(scaleX, rotateSkew0, rotateSkew1, scaleY, translateX, translateY);
 		}
 		
-		public function writeMATRIX(output:FastByteArray, value:SwfPackerTagPlaceObject):void
+		public function writeMATRIX(output:IByteArray, value:SwfPackerTagPlaceObject):void
 		{
 			var scaleX:Number = value.a;
 			var scaleY:Number = value.d;
@@ -123,7 +119,7 @@ package swfDataExporter
 			output.writeInt32(translateY);
 		}
 		
-		public function readColorMatrix(tag:SwfPackerTagPlaceObject, input:FastByteArray):void
+		public function readColorMatrix(tag:SwfPackerTagPlaceObject, input:IByteArray):void
 		{
 			tag.redColor0 = input.readInt32() / Constants.FIXED_PRECISSION_VALUE;
 			tag.redColor1 = input.readInt32() / Constants.FIXED_PRECISSION_VALUE;
@@ -152,7 +148,7 @@ package swfDataExporter
 			//trace(tag.instanceName, "read color matrix", tag.toColorMatrixString());
 		}
 		
-		public function writeColorMatrix(tag:SwfPackerTagPlaceObject, output:FastByteArray):void
+		public function writeColorMatrix(tag:SwfPackerTagPlaceObject, output:IByteArray):void
 		{
 			//trace(tag.instanceName, "write color matrix", tag.toColorMatrixString());
 			var hasOffset:Boolean = tag.redColorOffset != 0 || tag.greenColorOffset != 0 || tag.blueColorOffset != 0 || tag.alphaOffset != 0;
@@ -188,7 +184,7 @@ package swfDataExporter
 			output.writeInt32(tag.alphaOffset * Constants.FIXED_PRECISSION_VALUE);
 		}
 		
-		override public function exportTag(tag:SwfPackerTag, output:FastByteArray):void 
+		override public function exportTag(tag:SwfPackerTag, output:IByteArray):void 
 		{
 			super.exportTag(tag, output);
 			
@@ -268,7 +264,7 @@ package swfDataExporter
 		
 		private var totalTime:Number = 0;
 		private var totalTime2:Number = 0;
-		override public function importTag(tag:SwfPackerTag, input:FastByteArray):void 
+		override public function importTag(tag:SwfPackerTag, input:IByteArray):void 
 		{
 			var tagAsPlaceObject:SwfPackerTagPlaceObject = tag as SwfPackerTagPlaceObject;
 			
