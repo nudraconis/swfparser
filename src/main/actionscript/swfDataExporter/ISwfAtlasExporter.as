@@ -3,8 +3,8 @@ package swfDataExporter
 	import flash.geom.Rectangle;
 	import fastByteArray.IByteArray;
 	import swfdata.ShapeLibrary;
+	import swfdata.atlas.BaseTextureAtlas;
 	import swfdata.atlas.BitmapTextureAtlas;
-	import swfdata.atlas.ITextureAtlas;
 	import swfdata.atlas.TextureTransform;
 	import swfdata.atlas.genome.GenomeTextureAtlas;
 	
@@ -20,6 +20,6 @@ package swfDataExporter
 		
 		function exportAtlas(atlas:BitmapTextureAtlas, shapesList:ShapeLibrary, output:IByteArray):void;
 		
-		function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):ITextureAtlas;
+		function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):BaseTextureAtlas;
 	}
 }
