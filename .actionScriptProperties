@@ -11,7 +11,7 @@
       </libraryPathEntry>
       <libraryPathEntry kind="3" linkType="1" path="/fastByteArray/bin/fastByteArray.swc" useDefaultLinkType="false"/>
       <libraryPathEntry kind="3" linkType="1" path="/swfdata/bin/swfdata.swc" useDefaultLinkType="false"/>
-      <libraryPathEntry kind="3" linkType="1" path="/genom_drawer/bin/genom_drawer.swc" useDefaultLinkType="false"/>
+      <libraryPathEntry kind="3" linkType="1" path="/as3swf/bin/as3swf.swc" useDefaultLinkType="false"/>
     </libraryPath>
     <sourceAttachmentPath/>
   </compiler>
