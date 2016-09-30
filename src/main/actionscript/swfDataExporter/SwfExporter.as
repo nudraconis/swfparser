@@ -2,18 +2,20 @@ package swfDataExporter
 {
 	import fastByteArray.FastByteArray;
 	import fastByteArray.IByteArray;
-	import swfdata.atlas.GenomeTextureAtlas;
+	import swfdata.atlas.ITextureAtlas;
+	import swfdata.atlas.genome.GenomeTextureAtlas;
+	import swfdata.atlas.gl.GLTextureAtlas;
 	import swfdata.dataTags.SwfPackerTag;
 	import flash.utils.ByteArray;
 	import flash.utils.getTimer;
 	import swfdata.atlas.BitmapTextureAtlas;
 	import swfdata.ShapeLibrary;
-	import swfDataExporter.SwfAtlasExporter;
+	import swfDataExporter.GenomeAtlasExporter;
 	import swfDataExporter.SwfTagExporter;
 	
 	public class SwfExporter 
 	{
-		private var atlasExporter:SwfAtlasExporter = new SwfAtlasExporter();
+		private var atlasExporter:GenomeAtlasExporter = new GenomeAtlasExporter();
 		private var dataExporter:SwfTagExporter = new SwfTagExporter();
 		
 		public function SwfExporter() 
@@ -52,30 +54,19 @@ package swfDataExporter
 			return output;
 		}
 		
-		public function importSwfGenome(name:String, input:IByteArray, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>, format:String):GenomeTextureAtlas
+		public function importSwf(name:String, input:IByteArray, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>, format:String):ITextureAtlas
 		{
 			input.byteArray.inflate();
 			
 			input.begin();
 			
-			var atlas:GenomeTextureAtlas = atlasExporter.importAtlasGenome(name, input, shapesList, format);
+			var atlas:ITextureAtlas = atlasExporter.importAtlas(name, input, shapesList, format);
 			
 			dataExporter.importTags(tagsList, input);
 			
 			input.end(true);
 			
 			return atlas;
-		}
-		
-		public function importSwf(input:IByteArray, shapesList:ShapeLibrary, tagsList:Vector.<SwfPackerTag>):BitmapTextureAtlas
-		{
-			//input.byteArray.inflate();
-			
-			//var atlas:BitmapTextureAtlas = atlasExporter.importAtlas(input.byteArray, shapesList);
-			//input.position = input.byteArray.position;
-			//dataExporter.importTags(tagsList, input);
-			
-			return null;
 		}
 	}
 }
