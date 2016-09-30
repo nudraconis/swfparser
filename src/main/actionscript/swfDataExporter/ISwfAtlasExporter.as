@@ -1,12 +1,13 @@
 package swfDataExporter 
 {
-	import flash.geom.Rectangle;
 	import fastByteArray.IByteArray;
+	
+	import flash.geom.Rectangle;
+	
 	import swfdata.ShapeLibrary;
 	import swfdata.atlas.BitmapTextureAtlas;
 	import swfdata.atlas.ITextureAtlas;
 	import swfdata.atlas.TextureTransform;
-	import swfdata.atlas.genome.GenomeTextureAtlas;
 	
 	public interface ISwfAtlasExporter 
 	{

@@ -1,9 +1,8 @@
 package swfDataExporter 
 {
-	import fastByteArray.FastByteArray;
 	import fastByteArray.IByteArray;
+	
 	import swfdata.dataTags.SwfPackerTag;
-	import swfDataExporter.ExporerTypes;
 	
 	public class SwfPackerTagExporter
 	{

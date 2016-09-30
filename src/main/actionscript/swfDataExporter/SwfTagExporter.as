@@ -1,7 +1,7 @@
 package swfDataExporter 
 {
-	import fastByteArray.FastByteArray;
 	import fastByteArray.IByteArray;
+	
 	import swfdata.dataTags.SwfPackerTag;
 	import swfdata.dataTags.SwfPackerTagDefineSprite;
 	import swfdata.dataTags.SwfPackerTagEnd;
@@ -9,9 +9,6 @@ package swfDataExporter
 	import swfdata.dataTags.SwfPackerTagRemoveObject;
 	import swfdata.dataTags.SwfPackerTagShowFrame;
 	import swfdata.dataTags.SwfPackerTagSymbolClass;
-	import swfDataExporter.ExporerTypes;
-	import swfDataExporter.PlaceObjectExporter;
-	import swfDataExporter.SwfPackerTagExporter;
 	
 	public class SwfTagExporter
 	{
