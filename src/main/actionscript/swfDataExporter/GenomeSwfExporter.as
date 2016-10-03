@@ -1,24 +1,24 @@
 package swfDataExporter 
 {
-	import fastByteArray.FastByteArray;
 	import fastByteArray.IByteArray;
+<<<<<<< HEAD:src/main/actionscript/swfDataExporter/SwfExporter.as
 	import swfdata.atlas.BaseTextureAtlas;
 	import swfdata.atlas.genome.GenomeTextureAtlas;
 	import swfdata.atlas.gl.GLTextureAtlas;
-	import swfdata.dataTags.SwfPackerTag;
-	import flash.utils.ByteArray;
-	import flash.utils.getTimer;
-	import swfdata.atlas.BitmapTextureAtlas;
-	import swfdata.ShapeLibrary;
-	import swfDataExporter.GenomeAtlasExporter;
-	import swfDataExporter.SwfTagExporter;
+=======
 	
-	public class SwfExporter 
+	import swfdata.ShapeLibrary;
+	import swfdata.atlas.BitmapTextureAtlas;
+	import swfdata.atlas.ITextureAtlas;
+>>>>>>> origin/master:src/main/actionscript/swfDataExporter/GenomeSwfExporter.as
+	import swfdata.dataTags.SwfPackerTag;
+	
+	public class GenomeSwfExporter 
 	{
 		private var atlasExporter:GenomeAtlasExporter = new GenomeAtlasExporter();
 		private var dataExporter:SwfTagExporter = new SwfTagExporter();
 		
-		public function SwfExporter() 
+		public function GenomeSwfExporter() 
 		{
 			
 		}
