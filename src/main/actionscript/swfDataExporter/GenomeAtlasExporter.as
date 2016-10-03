@@ -6,9 +6,8 @@ package swfDataExporter
 	import flash.utils.ByteArray;
 	import swfdata.ShapeData;
 	import swfdata.ShapeLibrary;
+	import swfdata.atlas.BaseTextureAtlas;
 	import swfdata.atlas.BitmapTextureAtlas;
-	import swfdata.atlas.ITexture;
-	import swfdata.atlas.ITextureAtlas;
 	import swfdata.atlas.TextureTransform;
 	import swfdata.atlas.genome.GenomeSubTexture;
 	import swfdata.atlas.genome.GenomeTextureAtlas;
@@ -20,7 +19,7 @@ package swfDataExporter
 			
 		}
 		
-		override public function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):ITextureAtlas
+		override public function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):BaseTextureAtlas
 		{
 			var textureAtlas:GenomeTextureAtlas;
 			
@@ -78,7 +77,7 @@ package swfDataExporter
 				//}	
 				*/
 				shapesList.addShape(null, new ShapeData(id, shapeBounds));
-				var texture:GenomeSubTexture = new GenomeSubTexture(id, textureRegion, textureTransform, textureAtlas.gTextureAtlas);
+				var texture:GenomeSubTexture = new GenomeSubTexture(id, textureRegion, textureTransform, textureAtlas);
 				
 				textureAtlas.putTexture(texture);
 			}

@@ -40,5 +40,10 @@ package swfparser
 			placedObjectsById = new Dictionary();
 			//placeObjectsList.length = 0;
 		}
+		
+		public function dispose():void 
+		{
+			atlasDrawer.dispose();
+		}
 	}
 }
