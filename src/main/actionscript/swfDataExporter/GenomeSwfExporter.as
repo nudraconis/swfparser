@@ -1,12 +1,9 @@
 package swfDataExporter 
 {
 	import fastByteArray.IByteArray;
-	import swfdata.atlas.BaseTextureAtlas;
-	import swfdata.atlas.genome.GenomeTextureAtlas;
-	import swfdata.atlas.gl.GLTextureAtlas;
 	import swfdata.ShapeLibrary;
+	import swfdata.atlas.BaseTextureAtlas;
 	import swfdata.atlas.BitmapTextureAtlas;
-	import swfdata.atlas.ITextureAtlas;
 	import swfdata.dataTags.SwfPackerTag;
 	
 	public class GenomeSwfExporter 
