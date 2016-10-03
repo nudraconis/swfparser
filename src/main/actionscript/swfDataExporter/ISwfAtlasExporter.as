@@ -5,8 +5,8 @@ package swfDataExporter
 	import flash.geom.Rectangle;
 	
 	import swfdata.ShapeLibrary;
+	import swfdata.atlas.BaseTextureAtlas;
 	import swfdata.atlas.BitmapTextureAtlas;
-	import swfdata.atlas.ITextureAtlas;
 	import swfdata.atlas.TextureTransform;
 	
 	public interface ISwfAtlasExporter 
@@ -21,6 +21,6 @@ package swfDataExporter
 		
 		function exportAtlas(atlas:BitmapTextureAtlas, shapesList:ShapeLibrary, output:IByteArray):void;
 		
-		function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):ITextureAtlas;
+		function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):BaseTextureAtlas;
 	}
 }

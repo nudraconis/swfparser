@@ -7,9 +7,9 @@ package swfDataExporter
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
 	import swfdata.ShapeLibrary;
+	import swfdata.atlas.BaseSubTexture;
+	import swfdata.atlas.BaseTextureAtlas;
 	import swfdata.atlas.BitmapTextureAtlas;
-	import swfdata.atlas.ITexture;
-	import swfdata.atlas.ITextureAtlas;
 	import swfdata.atlas.TextureTransform;
 	
 	public class BaseSwfAtlasExporter implements ISwfAtlasExporter
@@ -160,7 +160,7 @@ package swfDataExporter
 		
 		public function exportAtlas(atlas:BitmapTextureAtlas, shapesList:ShapeLibrary, output:IByteArray):void 
 		{
-			var bitmap:BitmapData = atlas.atlasData;
+			var bitmap:BitmapData = atlas.data;
 			var bitmapBytes:ByteArray = bitmap.getPixels(bitmap.rect);
 			
 			if (bitmap.width < 2 || bitmap.height < 2)
@@ -177,7 +177,7 @@ package swfDataExporter
 			
 			//trace('pre write', output.position);
 			
-			for each(var texture:ITexture in atlas.subTextures)
+			for each(var texture:BaseSubTexture in atlas.subTextures)
 			{
 				output.writeInt16(texture.id);
 				
@@ -191,7 +191,7 @@ package swfDataExporter
 			//output.end(false);
 		}
 		
-		public function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):ITextureAtlas 
+		public function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):BaseTextureAtlas 
 		{
 			return null;
 		}
