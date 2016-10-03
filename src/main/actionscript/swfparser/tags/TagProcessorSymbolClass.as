@@ -1,17 +1,16 @@
 package swfparser.tags 
 {
 	import flash.geom.Matrix;
-	import swfdata.dataTags.RawClassSymbol;
-	import swfdata.dataTags.SwfPackerTag;
-	import swfdata.dataTags.SwfPackerTagSymbolClass;
 	import swfdata.DisplayObjectData;
 	import swfdata.DisplayObjectTypes;
 	import swfdata.FrameData;
 	import swfdata.MovieClipData;
 	import swfdata.ShapeData;
 	import swfdata.SpriteData;
-	import swfdata.swfdata_inner;
 	import swfdata.Timeline;
+	import swfdata.swfdata_inner;
+	import swfdata.dataTags.SwfPackerTag;
+	import swfdata.dataTags.SwfPackerTagSymbolClass;
 	import swfparser.SwfParserContext;
 	
 	use namespace swfdata_inner;
@@ -22,21 +21,6 @@ package swfparser.tags
 	{
 		private static const IDENT_MATRIX:Matrix = new Matrix();
 		private static const SHAPE_HELPER_MATRIX:Matrix = new Matrix();
-		
-		private static var matrixPoolPointer:int = 0;
-		private static const MATRIX_POOL:Vector.<Matrix> = new Vector.<Matrix>(50, false);
-		
-		[Inline]
-		public static function getMatrix():Matrix
-		{
-			return MATRIX_POOL.shift();// [matrixPoolPointer++];
-		}
-		
-		[Inline]
-		public static function freeMatrix(matrix:Matrix):void
-		{
-			MATRIX_POOL[MATRIX_POOL.length] = matrix;
-		}
 		
 		public function TagProcessorSymbolClass(context:SwfParserContext) 
 		{
@@ -102,7 +86,7 @@ package swfparser.tags
 		[Inline]
 		public final function calculateSpriteTransform(spriteData:SpriteData, parentTransform:Matrix):void 
 		{
-			var sceneTransform:Matrix = getMatrix();
+			var sceneTransform:PooledMatrix = PooledMatrix.get();
 			GeomMath.concatMatrices(spriteData.transform, parentTransform, sceneTransform);
 			
 			var displayObjects:Vector.<DisplayObjectData> = spriteData.displayObjects;
@@ -113,15 +97,14 @@ package swfparser.tags
 				calculateSceneTransforms(displayObjects[j], sceneTransform);
 			}
 			
-			freeMatrix(sceneTransform);
+			sceneTransform.dispose();
 		}
 		
 		[Inline]
 		public final function calculateMovieClipTransform(movieClipData:MovieClipData, parentTransform:Matrix):void 
 		{
-			var sceneTransform:Matrix = getMatrix();
+			var sceneTransform:Matrix = PooledMatrix.get();
 			
-			sceneTransform.identity();
 			GeomMath.concatMatrices(movieClipData.transform, parentTransform, sceneTransform);
 			//MathUtils.concatMatrices(sceneTransform, parentTransform, sceneTransform);
 			//MathUtils.concatMatrices(sceneTransform, movieClipData.transform, sceneTransform);
@@ -152,7 +135,7 @@ package swfparser.tags
 				}
 			}
 			
-			freeMatrix(sceneTransform);
+			sceneTransform.dispose();
 		}
 		
 		private function calculeteShapeTransform(shapeData:ShapeData, parentTransform:Matrix):void 
