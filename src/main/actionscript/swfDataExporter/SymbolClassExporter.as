@@ -1,12 +1,9 @@
 package swfDataExporter 
 {
-	import fastByteArray.FastByteArray;
 	import fastByteArray.IByteArray;
-	import swfdata.dataTags.RawClassSymbol;
+	
 	import swfdata.dataTags.SwfPackerTag;
 	import swfdata.dataTags.SwfPackerTagSymbolClass;
-	import swfDataExporter.ExporerTypes;
-	import swfDataExporter.SwfPackerTagExporter;
 	
 	public class SymbolClassExporter extends SwfPackerTagExporter
 	{

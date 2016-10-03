@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="false" useMultiPlatformConfig="false" version="3">
+  <includeClasses>
+    <classEntry path="FastMath"/>
+    <classEntry path="internal_error"/>
+    <classEntry path="internal_trace"/>
+    <classEntry path="swfDataExporter.BaseSwfAtlasExporter"/>
+    <classEntry path="swfDataExporter.DefineSpriteExporter"/>
+    <classEntry path="swfDataExporter.ExporerTypes"/>
+    <classEntry path="swfDataExporter.ISwfAtlasExporter"/>
+    <classEntry path="swfDataExporter.ISwfPackerTagExporter"/>
+    <classEntry path="swfDataExporter.PlaceObjectExporter"/>
+    <classEntry path="swfDataExporter.RemoveObjectExporter"/>
+    <classEntry path="swfDataExporter.SwfPackerTagExporter"/>
+    <classEntry path="swfDataExporter.SwfTagExporter"/>
+    <classEntry path="swfDataExporter.SymbolClassExporter"/>
+    <classEntry path="swfparser.DisplayObjectContext"/>
+    <classEntry path="swfparser.ISWFDataParser"/>
+    <classEntry path="swfparser.SwfParserContext"/>
+    <classEntry path="swfparser.SwfParserLight"/>
+    <classEntry path="swfparser.tags.TagProcessorBase"/>
+    <classEntry path="swfparser.tags.TagProcessorDefineSprite"/>
+    <classEntry path="swfparser.tags.TagProcessorEnd"/>
+    <classEntry path="swfparser.tags.TagProcessorPlaceObject"/>
+    <classEntry path="swfparser.tags.TagProcessorRemoveObject"/>
+    <classEntry path="swfparser.tags.TagProcessorShowFrame"/>
+    <classEntry path="swfparser.tags.TagProcessorSymbolClassLight"/>
+    <classEntry path="util.AtlasRectanglesData"/>
+    <classEntry path="util.MaxRectPacker"/>
+    <classEntry path="util.PackerRectangle"/>
+    <classEntry path="swfparser.tags.TagProcessorSymbolClass"/>
+    <classEntry path="swfparser.tags.TagsRebuilder"/>
+    <classEntry path="swfparser.tags.TagProcessorShapeDefinition"/>
+    <classEntry path="swfparser.SwfDataParser"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
