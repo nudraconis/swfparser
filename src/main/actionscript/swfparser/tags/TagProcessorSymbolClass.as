@@ -24,11 +24,6 @@ package swfparser.tags
 		
 		public function TagProcessorSymbolClass(context:SwfParserContext) 
 		{
-			for (var i:int = 0; i < MATRIX_POOL.length; i++)
-			{
-				MATRIX_POOL[i] = new Matrix();
-			}
-			
 			super(context);
 		}
 	
@@ -86,7 +81,7 @@ package swfparser.tags
 		[Inline]
 		public final function calculateSpriteTransform(spriteData:SpriteData, parentTransform:Matrix):void 
 		{
-			var sceneTransform:PooledMatrix = PooledMatrix.get();
+			var sceneTransform:PooledMatrix = PooledMatrix.get(1, 0, 0, 1, 0, 0);
 			GeomMath.concatMatrices(spriteData.transform, parentTransform, sceneTransform);
 			
 			var displayObjects:Vector.<DisplayObjectData> = spriteData.displayObjects;
@@ -103,7 +98,7 @@ package swfparser.tags
 		[Inline]
 		public final function calculateMovieClipTransform(movieClipData:MovieClipData, parentTransform:Matrix):void 
 		{
-			var sceneTransform:Matrix = PooledMatrix.get();
+			var sceneTransform:PooledMatrix = PooledMatrix.get(1, 0, 0, 1, 0, 0);
 			
 			GeomMath.concatMatrices(movieClipData.transform, parentTransform, sceneTransform);
 			//MathUtils.concatMatrices(sceneTransform, parentTransform, sceneTransform);
