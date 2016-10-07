@@ -113,33 +113,21 @@ package swfparser.tags
 				
 			tagOut.depth = tag.depth;
 			
-			var colorTransform:ColorMatrix;
+			//var colorTransform:ColorMatrix;
 			
 			if (tag.hasColorTransform)
 			{
-
-				var colorData:Vector.<Number> = new <Number>[ 1,0,0,0,0,
-															  0,1,0,0,0,
-															  0,0,1,0,0,
-															  0, 0, 0, 1, 0];
+				tagOut.redMultiplier = tag.colorTransform.colorTransform.redMultiplier;
+				tagOut.redAdd = tag.colorTransform.colorTransform.redOffset;
 				
-				colorData[0] = tag.colorTransform.colorTransform.redMultiplier;
-				colorData[4] = tag.colorTransform.colorTransform.redOffset;
+				tagOut.greenMultiplier = tag.colorTransform.colorTransform.greenMultiplier;
+				tagOut.greenAdd = tag.colorTransform.colorTransform.greenOffset;
 				
-				colorData[6] = tag.colorTransform.colorTransform.greenMultiplier;
-				colorData[9] = tag.colorTransform.colorTransform.greenOffset;
+				tagOut.blueMultiplier = tag.colorTransform.colorTransform.blueMultiplier;
+				tagOut.blueAdd = tag.colorTransform.colorTransform.blueOffset;
 				
-				colorData[12] = tag.colorTransform.colorTransform.blueMultiplier;
-				colorData[14] = tag.colorTransform.colorTransform.blueOffset;
-				
-				colorData[18] = tag.colorTransform.colorTransform.alphaMultiplier;
-				colorData[19] = tag.colorTransform.colorTransform.alphaOffset;
-				//trace("COLOR TRANSFORM ###", colorData);
-				
-				if (colorTransform == null)
-					colorTransform = new ColorMatrix();
-					
-				colorTransform.concat(colorData);
+				tagOut.alphaMultiplier = tag.colorTransform.colorTransform.alphaMultiplier;
+				tagOut.alphaAdd = tag.colorTransform.colorTransform.alphaOffset;
 			}
 			
 			/**
@@ -171,7 +159,7 @@ package swfparser.tags
 				}
 			}*/
 			
-			if (colorTransform != null)
+			/*if (colorTransform != null)
 			{
 				tagOut.hasColorTransform = true;
 				
@@ -200,7 +188,7 @@ package swfparser.tags
 				tagOut.alphaOffset = colorTransform.matrix[19];
 				
 				//trace("GET MATRIX", colorTransform.matrix);
-			}
+			}*/
 			
 			/*if (tag.hasFilterList)
 			{

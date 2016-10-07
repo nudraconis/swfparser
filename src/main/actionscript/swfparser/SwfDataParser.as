@@ -53,8 +53,10 @@ package swfparser
 		private var onlyTagsReport:Boolean;
 		private var drawAdditionalAA:Boolean;
 		
-		public function SwfDataParser(onlyTagsReport:Boolean = false) 
+		private var atlasSize:int;
+		
 		{
+			this.atlasSize = atlasSize;
 			this.onlyTagsReport = onlyTagsReport;
 			
 			initialize();
@@ -67,7 +69,11 @@ package swfparser
 			clear();
 		}
 		
-	
+		public function dispose():void
+		{
+			context.dispose();
+		}
+		
 		public function clear():void 
 		{
 			//swfTagsParser = null;
@@ -83,7 +89,7 @@ package swfparser
 			packerTags.length = 0;
 			
 			if(context.atlasDrawer == null)
-				context.atlasDrawer = new AtlasDrawer(new BitmapTextureAtlas(2048, 2048, 4), 1, 4);
+				context.atlasDrawer = new AtlasDrawer(new BitmapTextureAtlas(atlasSize, atlasSize, 4), 1, 4);
 			else
 			{
 				context.atlasDrawer.clean();

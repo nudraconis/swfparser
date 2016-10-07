@@ -23,7 +23,7 @@ package swfparser.tags
 		private static const SHAPE_HELPER_MATRIX:Matrix = new Matrix();
 		
 		public function TagProcessorSymbolClass(context:SwfParserContext) 
-		{
+		{	
 			super(context);
 		}
 	
