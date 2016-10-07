@@ -94,7 +94,7 @@ package swfparser.tags
 			return placedDO;
 		}
 		
-		private function getObjectFromLibrary(id:int, hasMatrix:Boolean):DisplayObjectData
+		private function getObjectFromLibrary(id:int, hasMatrix:Boolean, hasColorTransform:Boolean):DisplayObjectData
 		{
 			var placedDO:DisplayObjectData;
 			var prototype:DisplayObjectData;
@@ -146,8 +146,8 @@ package swfparser.tags
 			
 			if (tag.hasColorTransform)
 			{
-				currentDisplayObject.colorTransform = tag.getColorTransformMatrix();
-				
+				//trace("set color", tag.redAdd, tag.greenAdd, tag.blueAdd, tag.alphaAdd);
+				currentDisplayObject.setColorData(tag.redMultiplier, tag.greenMultiplier, tag.blueMultiplier, tag.alphaMultiplier, tag.redAdd, tag.greenAdd, tag.blueAdd, tag.alphaAdd);
 			}
 				
 			if (tag.hasName)
@@ -175,6 +175,7 @@ package swfparser.tags
 			//trace('place object', doAsMovieClip? doAsMovieClip.currentFrame:"noframe", tagPlaceObject.hasMatrix, tagPlaceObject.placeMode, tagPlaceObject.characterId, tagPlaceObject.instanceName, tagPlaceObject.depth);
 			
 			var hasMatrix:Boolean = tagPlaceObject.hasMatrix;
+			var hasColorTransform:Boolean = tagPlaceObject.hasColorTransform;
 			//trace('place do', tagPlaceObject.placeMode, tagPlaceObject.characterId, hasMatrix);
 			
 			var preveousFrameDO:DisplayObjectData;
@@ -182,7 +183,7 @@ package swfparser.tags
 			if (tagPlaceObject.placeMode == SwfPackerTagPlaceObject.PLACE_MODE_PLACE)
 			{
 				//положили объект в таймлайн в первый раз скорее всего поэтому тут поидеи есть чарактер айди и можно взять его из библиотеки
-				placedDO = getObjectFromLibrary(tagPlaceObject.characterId, hasMatrix);
+				placedDO = getObjectFromLibrary(tagPlaceObject.characterId, hasMatrix, hasColorTransform);
 				
 				if (!placedDO)//но его там может не быть т.к морфы не парсятся к примеру
 					return;
@@ -228,7 +229,7 @@ package swfparser.tags
 					return;
 				}
 				
-				if (hasMatrix)
+				if (hasMatrix || hasColorTransform)
 				{
 					placedDO = preveousFrameDO.clone();
 					fillFromTag(placedDO, tagPlaceObject);

@@ -119,7 +119,7 @@ package swfDataExporter
 			output.writeInt32(translateY);
 		}
 		
-		public function readColorMatrix(tag:SwfPackerTagPlaceObject, input:IByteArray):void
+		/*public function readColorMatrix(tag:SwfPackerTagPlaceObject, input:IByteArray):void
 		{
 			tag.redColor0 = input.readInt32() / Constants.FIXED_PRECISSION_VALUE;
 			tag.redColor1 = input.readInt32() / Constants.FIXED_PRECISSION_VALUE;
@@ -182,6 +182,32 @@ package swfDataExporter
 			output.writeInt32(tag.alpha2 * Constants.FIXED_PRECISSION_VALUE);
 			output.writeInt32(tag.alpha3 * Constants.FIXED_PRECISSION_VALUE);
 			output.writeInt32(tag.alphaOffset * Constants.FIXED_PRECISSION_VALUE);
+		}*/
+		
+		public function readColorTransform(tag:SwfPackerTagPlaceObject, input:IByteArray):void
+		{
+			tag.redMultiplier = input.readInt32() / Constants.FIXED_PRECISSION_VALUE;
+			tag.greenMultiplier = input.readInt32() / Constants.FIXED_PRECISSION_VALUE;
+			tag.blueMultiplier = input.readInt32() / Constants.FIXED_PRECISSION_VALUE;
+			tag.alphaMultiplier = input.readInt32() / Constants.FIXED_PRECISSION_VALUE;
+			
+			tag.redAdd = input.readInt32();
+			tag.blueAdd = input.readInt32();
+			tag.greenAdd = input.readInt32();
+			tag.alphaAdd = input.readInt32();
+		}
+		
+		public function writeColorTransform(tag:SwfPackerTagPlaceObject, output:IByteArray):void
+		{
+			output.writeInt32(tag.redMultiplier * Constants.FIXED_PRECISSION_VALUE);
+			output.writeInt32(tag.greenMultiplier * Constants.FIXED_PRECISSION_VALUE);
+			output.writeInt32(tag.blueMultiplier * Constants.FIXED_PRECISSION_VALUE);
+			output.writeInt32(tag.alphaMultiplier * Constants.FIXED_PRECISSION_VALUE);
+			
+			output.writeInt32(tag.redAdd);
+			output.writeInt32(tag.blueAdd);
+			output.writeInt32(tag.greenAdd);
+			output.writeInt32(tag.alphaAdd);
 		}
 		
 		override public function exportTag(tag:SwfPackerTag, output:IByteArray):void 
@@ -255,7 +281,7 @@ package swfDataExporter
 			if (tagAsPlaceObject.hasColorTransform)
 			{
 				//trace('shood write color');
-				writeColorMatrix(tagAsPlaceObject, output);
+				writeColorTransform(tagAsPlaceObject, output);
 				//byteArray.writeColorTransform(tagAsPlaceObject.colorTransfo)
 			}
 				
@@ -314,7 +340,7 @@ package swfDataExporter
 			{
 				
 				tagAsPlaceObject.hasColorTransform = true;
-				readColorMatrix(tagAsPlaceObject, input);
+				readColorTransform(tagAsPlaceObject, input);
 				//tagAsPlaceObject.hasColorTransform = true;
 				//tagAsPlaceObject.colorTransform = bitOperator.readColorTransform();
 			}
