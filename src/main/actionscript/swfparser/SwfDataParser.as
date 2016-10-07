@@ -55,6 +55,7 @@ package swfparser
 		
 		private var atlasSize:int;
 		
+		public function SwfDataParser(onlyTagsReport:Boolean = false, atlasSize:int = 2048) 
 		{
 			this.atlasSize = atlasSize;
 			this.onlyTagsReport = onlyTagsReport;
