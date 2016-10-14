@@ -2,9 +2,12 @@ package swfDataExporter
 {
 	import fastByteArray.Constants;
 	import fastByteArray.IByteArray;
+	
 	import swfDataExporter.ExporerTypes;
+	
 	import swfdata.dataTags.SwfPackerTag;
 	import swfdata.dataTags.SwfPackerTagPlaceObject;
+	
 	import utils.BitMask;
 
 	public class PlaceObjectExporter extends SwfPackerTagExporter
@@ -236,7 +239,10 @@ package swfDataExporter
 				
 			if (tagAsPlaceObject.hasColorTransform)
 				bitMask.setBit(4);
-			//	
+
+			if (tagAsPlaceObject.hasBlendMode)
+				bitMask.setBit(5);
+			
 			//if (tagAsPlaceObject.hasMove)
 			//	bitMask.setBit(7);
 				
@@ -244,10 +250,7 @@ package swfDataExporter
 			//	bitMask.setBit(8);
 				
 			//if (tagAsPlaceObject.hasImage)
-			//	bitMask.setBit(9);
-				
-			//if (tagAsPlaceObject.hasBlendMode)
-			//	bitMask.setBit(10);
+			//	bitMask.setBit(9);	
 				
 			//if (tagAsPlaceObject.hasFilterList)
 			//	bitMask.setBit(11);
@@ -284,6 +287,11 @@ package swfDataExporter
 				writeColorTransform(tagAsPlaceObject, output);
 				//byteArray.writeColorTransform(tagAsPlaceObject.colorTransfo)
 			}
+			
+			if (tagAsPlaceObject.hasBlendMode)
+			{
+				output.writeInt8(tagAsPlaceObject.blendMode);
+			}
 				
 			//output.end(false);
 		}
@@ -305,6 +313,7 @@ package swfDataExporter
 			var hasMatrix:Boolean = bitMask.isBitSet(2);
 			var hasCharacter:Boolean = bitMask.isBitSet(3);
 			var hasColorTransform:Boolean = bitMask.isBitSet(4);
+			var hasBlendMode:Boolean = bitMask.isBitSet(5);
 			
 			var instanceName:String;
 			var clipDepth:int;
@@ -343,6 +352,12 @@ package swfDataExporter
 				readColorTransform(tagAsPlaceObject, input);
 				//tagAsPlaceObject.hasColorTransform = true;
 				//tagAsPlaceObject.colorTransform = bitOperator.readColorTransform();
+			}
+			
+			if (hasBlendMode)
+			{
+				tagAsPlaceObject.hasBlendMode = true;
+				tagAsPlaceObject.blendMode = input.readInt8();
 			}
 		}
 	}

@@ -106,7 +106,7 @@ package swfparser.tags
 			tagOut.hasMove = tag.hasMove;
 			//tagOut.hasVisible = tag.hasVisible;
 			//tagOut.hasImage = tag.hasImage;
-			//tagOut.hasBlendMode = tag.hasBlendMode;
+			tagOut.hasBlendMode = tag.hasBlendMode;
 			//tagOut.hasFilterList = tag.hasFilterList;
 			
 			tagOut.characterId = tag.characterId;
@@ -221,7 +221,7 @@ package swfparser.tags
 			tagOut.instanceName = tag.instanceName;
 			tagOut.clipDepth = tag.clipDepth;
 			
-			//tagOut.blendMode = tag.blendMode;
+			tagOut.blendMode = tag.blendMode;
 			//tagOut.bitmapCache = tag.bitmapCache;
 			//tagOut.bitmapBackgroundColor = tag.bitmapBackgroundColor;
 			tagOut.visible = tag.visible;

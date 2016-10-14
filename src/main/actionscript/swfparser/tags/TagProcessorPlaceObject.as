@@ -1,11 +1,13 @@
 package swfparser.tags 
 {
 	import flash.geom.Matrix;
-	import swfdata.dataTags.SwfPackerTag;
-	import swfdata.dataTags.SwfPackerTagPlaceObject;
+	
 	import swfdata.DisplayObjectData;
 	import swfdata.MovieClipData;
 	import swfdata.SpriteData;
+	import swfdata.dataTags.SwfPackerTag;
+	import swfdata.dataTags.SwfPackerTagPlaceObject;
+	
 	import swfparser.SwfParserContext;
 	
 	/**
@@ -54,7 +56,7 @@ package swfparser.tags
 			 * в предидущих кадрах, и нужно ли их клонировать.
 			 */
 			
-			var isNeedClone:Boolean = tag.hasMatrix || tag.hasColorTransform;
+			var isNeedClone:Boolean = tag.hasMatrix || tag.hasColorTransform || tag.hasBlendMode;
 			var placedDO:DisplayObjectData;
 			var depth:int = tag.depth;
 			
@@ -94,14 +96,14 @@ package swfparser.tags
 			return placedDO;
 		}
 		
-		private function getObjectFromLibrary(id:int, hasMatrix:Boolean, hasColorTransform:Boolean):DisplayObjectData
+		private function getObjectFromLibrary(id:int, isNeedClone:Boolean):DisplayObjectData
 		{
 			var placedDO:DisplayObjectData;
 			var prototype:DisplayObjectData;
 			
 			prototype = context.library.getDisplayObject(id);
 			
-			if (hasMatrix)
+			if (isNeedClone)
 			{
 				if (prototype)
 				{
@@ -152,6 +154,10 @@ package swfparser.tags
 				
 			if (tag.hasName)
 				currentDisplayObject.name = tag.instanceName;
+			
+			// TODO вот это странное место, но если не проверять на уже установленный, то затирается в 0, что делать, если это реально нужно?
+			if(!currentDisplayObject.blendMode || tag.blendMode)
+				currentDisplayObject.blendMode = tag.blendMode;
 				
 			currentDisplayObject.hasMoved = tag.hasMove;
 		}
@@ -176,6 +182,8 @@ package swfparser.tags
 			
 			var hasMatrix:Boolean = tagPlaceObject.hasMatrix;
 			var hasColorTransform:Boolean = tagPlaceObject.hasColorTransform;
+			var hasBlendMode:Boolean = tagPlaceObject.hasBlendMode;
+			var isNeedClone:Boolean = hasMatrix || hasColorTransform || hasBlendMode;
 			//trace('place do', tagPlaceObject.placeMode, tagPlaceObject.characterId, hasMatrix);
 			
 			var preveousFrameDO:DisplayObjectData;
@@ -183,7 +191,9 @@ package swfparser.tags
 			if (tagPlaceObject.placeMode == SwfPackerTagPlaceObject.PLACE_MODE_PLACE)
 			{
 				//положили объект в таймлайн в первый раз скорее всего поэтому тут поидеи есть чарактер айди и можно взять его из библиотеки
-				placedDO = getObjectFromLibrary(tagPlaceObject.characterId, hasMatrix, hasColorTransform);
+				//placedDO = getObjectFromLibrary(tagPlaceObject.characterId, isNeedClone);
+				//Вот тут в оригинале не клонировалось, если была колорматрица, нужно ли клонировать с блендом?
+				placedDO = getObjectFromLibrary(tagPlaceObject.characterId, hasMatrix || hasBlendMode);
 				
 				if (!placedDO)//но его там может не быть т.к морфы не парсятся к примеру
 					return;
@@ -213,6 +223,11 @@ package swfparser.tags
 					placedDO.setTransformMatrix(preveousFrameDO.transform);
 				}
 				
+				if (!hasBlendMode)
+				{
+					placedDO.blendMode = preveousFrameDO.blendMode;
+				}
+				
 				if (context.placeObjectsMap[placedDO.depth] != placedDO)
 				{
 					context.placeObjectsMap[placedDO.depth] = placedDO;
@@ -229,7 +244,7 @@ package swfparser.tags
 					return;
 				}
 				
-				if (hasMatrix || hasColorTransform)
+				if (isNeedClone)
 				{
 					placedDO = preveousFrameDO.clone();
 					fillFromTag(placedDO, tagPlaceObject);
