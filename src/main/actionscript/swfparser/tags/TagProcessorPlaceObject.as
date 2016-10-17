@@ -193,7 +193,7 @@ package swfparser.tags
 				//положили объект в таймлайн в первый раз скорее всего поэтому тут поидеи есть чарактер айди и можно взять его из библиотеки
 				//placedDO = getObjectFromLibrary(tagPlaceObject.characterId, isNeedClone);
 				//Вот тут в оригинале не клонировалось, если была колорматрица, нужно ли клонировать с блендом?
-				placedDO = getObjectFromLibrary(tagPlaceObject.characterId, hasMatrix || hasBlendMode);
+				placedDO = getObjectFromLibrary(tagPlaceObject.characterId, isNeedClone);
 				
 				if (!placedDO)//но его там может не быть т.к морфы не парсятся к примеру
 					return;
