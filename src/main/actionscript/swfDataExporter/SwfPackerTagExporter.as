@@ -8,7 +8,7 @@ package swfDataExporter
 	{
 		public var type:int;
 		
-		public function SwfPackerTagExporter(type:int = ExporerTypes.BASE_TYPE) 
+		public function SwfPackerTagExporter(type:int = 0) 
 		{
 			this.type = type;
 		}

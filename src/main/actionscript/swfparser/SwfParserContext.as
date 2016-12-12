@@ -1,6 +1,7 @@
 package swfparser 
 {
 	import flash.utils.Dictionary;
+	import swfdata.BitmapLibrary;
 	import swfdata.atlas.AtlasDrawer;
 	import swfdata.DisplayObjectData;
 	import swfdata.IDisplayObjectContainer;
@@ -13,6 +14,7 @@ package swfparser
 		public var atlasDrawer:AtlasDrawer;
 		public var library:SymbolsLibrary;
 		public var shapeLibrary:ShapeLibrary;
+		public var bitmapLibrary:BitmapLibrary;
 		
 		public var placeObjectsMap:Dictionary = new Dictionary();
 		public var placedObjectsById:Dictionary = new Dictionary();
