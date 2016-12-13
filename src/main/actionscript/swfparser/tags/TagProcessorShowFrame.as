@@ -66,7 +66,7 @@ package swfparser.tags
 		[Inline]
 		public static function sortOnDepth(a:DisplayObjectData, b:DisplayObjectData):Number 
 		{
-			if (a.depth > b.depth)
+			if (a && b && a.depth > b.depth)
 				return 1;
 			//else if (a.depth < b.depth)
 			//	return -1;

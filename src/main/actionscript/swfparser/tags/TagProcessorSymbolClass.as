@@ -63,6 +63,7 @@ package swfparser.tags
 		[Inline]
 		public final function calculateSceneTransforms(processedDisplayObject:DisplayObjectData, parentTransform:Matrix):void
 		{
+			if (!processedDisplayObject) return;
 			if(processedDisplayObject.displayObjectType == DisplayObjectTypes.SPRITE_TYPE)
 			{
 				calculateSpriteTransform(processedDisplayObject as SpriteData, parentTransform);
