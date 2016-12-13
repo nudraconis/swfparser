@@ -43,6 +43,7 @@ package swfparser
 	import swfparser.tags.TagProcessorSymbolClass;
 	import swfparser.tags.TagsRebuilder;
 
+	[Event(name="complete", type="flash.events.Event")]
 	public class SwfDataParser extends EventDispatcher implements ISWFDataParser
 	{
 		private var _context:SwfParserContext = new SwfParserContext();
