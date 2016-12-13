@@ -1,7 +1,7 @@
 package swfparser 
 {
 	import com.codeazur.as3swf.SWF;
-	import com.codeazur.as3swf.exporters.AS3GraphicsDataShapeExporter;
+	import swfDataExporter.AS3GraphicsDataShapeExporter;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.tags.TagDefineBits;
 	import com.codeazur.as3swf.tags.TagDefineBitsJPEG2;

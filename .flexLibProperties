@@ -32,6 +32,7 @@
     <classEntry path="swfparser.tags.TagsRebuilder"/>
     <classEntry path="swfparser.tags.TagProcessorShapeDefinition"/>
     <classEntry path="swfparser.SwfDataParser"/>
+    <classEntry path="swfDataExporter.AS3GraphicsDataShapeExporter"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
