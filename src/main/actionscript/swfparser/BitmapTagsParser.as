@@ -42,6 +42,10 @@ package swfparser
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
+		public function clear():void {
+			bitmapTagProcessor.clear();
+		}
+		
 		public function destroy():void
 		{
 			bitmapTagProcessor.removeEventListener(Event.COMPLETE, onTagProcessed);

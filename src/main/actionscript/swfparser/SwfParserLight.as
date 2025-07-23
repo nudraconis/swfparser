@@ -10,6 +10,7 @@ package swfparser
 	import swfparser.tags.TagProcessorRemoveObject;
 	import swfparser.tags.TagProcessorShowFrame;
 	import swfparser.tags.TagProcessorSymbolClassLight;
+	import swfparser.tags.TagProcessorTextFieldDefinition;
 	
 	public class SwfParserLight implements ISWFDataParser 
 	{
@@ -49,6 +50,7 @@ package swfparser
 			tagsProcessors = { };
 			
 			tagsProcessors[39] = new TagProcessorDefineSprite(context, this);
+			tagsProcessors[37] = new TagProcessorTextFieldDefinition(context);
 			
 			if(isUseEndTag)
 				tagsProcessors[0] = new TagProcessorEnd(context);

@@ -85,6 +85,9 @@ package swfparser.tags
 			if (bitmapId == 0)
 				trace('Error: wrong? bitmap dfinition');
 				
+			//if (bitmapId == 18)
+				//WindowUtil.openWindowToReview(bitmapData.clone(), bitmapId + "BITMAP");
+				
 			context.bitmapLibrary.addBitmap(bitmapId, bitmapData);
 			
 			dispatchEvent(new Event(Event.COMPLETE));
@@ -96,13 +99,18 @@ package swfparser.tags
 			
 			if (tagDefineBitmap.completeBitmapData != null)
 			{
+				alphaBytes = null;
+				alphaBytes = tagDefineBitmap.bitmapAlphaData
+				
+				if (alphaBytes)
+					alphaBytes.uncompress();
+				
 				bitmapData = tagDefineBitmap.completeBitmapData;
 				finish();
 			}
 			else
 			{
 				alphaBytes = null;
-			
 				alphaBytes = tagDefineBitmap.bitmapAlphaData
 				
 				if (alphaBytes)
@@ -110,10 +118,15 @@ package swfparser.tags
 					
 				loader.loadBytes(tagDefineBitmap.bitmapData);
 			}
+			
+			tagDefineBitmap.clear();
 		}
 		
 		public function clear():void 
 		{
+			if (bitmapData != null)
+				bitmapData.dispose();
+			
 			context = null;
 			loader.contentLoaderInfo.removeEventListener(Event.COMPLETE, onBitmapDecoded);
 		}

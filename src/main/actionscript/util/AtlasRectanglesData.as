@@ -19,7 +19,7 @@ package util
 			
 			width = 1;
 			height = 1;
-			atlasIndex = 0;
+			//atlasIndex = 0;
 			
 			clearRects();
 		}

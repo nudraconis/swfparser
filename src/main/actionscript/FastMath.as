@@ -33,6 +33,13 @@ package
 			return a < b? a:b;
 		}
 		
+		[Inline]
+		public static function min(a:Number, b:Number):Number
+		{
+			return a < b? a:b;
+		}
+		
+		[Inline]
 		public static function angle(x1:Number, y1:Number, x2:Number, y2:Number):Number
 		{
 			x1 = x1 - x2;

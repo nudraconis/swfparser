@@ -1,19 +1,9 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  © 2014 CrazyPanda LLC
-//
-////////////////////////////////////////////////////////////////////////////////
 package util {
 	import flash.display.BitmapData;
 	import flash.geom.Matrix;
 	import flash.geom.Point;
 	import flash.geom.Rectangle;
 
-	/**
-	 * @author                    Obi
-	 * @langversion                3.0
-	 * @date                    27.11.2014
-	 */
 	public class MaxRectPacker {
 		//--------------------------------------------------------------------------
 		//
@@ -43,7 +33,7 @@ package util {
 		//
 		//--------------------------------------------------------------------------
 
-		public function MaxRectPacker(maxWidth:int = 2048, maxHeight:int = 2048, autoExpand:Boolean = true, heuristics:int = 0):void 
+		public function MaxRectPacker(maxWidth:int = 4096, maxHeight:int = 4096, autoExpand:Boolean = true, heuristics:int = 0):void 
 		{
 			this._maxWidth = maxWidth;
 			this._maxHeight = maxHeight;
@@ -51,6 +41,7 @@ package util {
 			//this.clear(atlasDatas[0]);
 			this._newBoundingArea = PackerRectangle.get(0, 0, 0, 0);
 			this._heuristics = heuristics;
+			
 		}
 
 		//--------------------------------------------------------------------------
@@ -176,7 +167,9 @@ package util {
 					atlasDatas[i].clear();
 			}
 			//else
-				atlasDatas = new <AtlasRectanglesData>[new AtlasRectanglesData(0)];
+				atlasDatas = new <AtlasRectanglesData>[new AtlasRectanglesData(0), new AtlasRectanglesData(1), new AtlasRectanglesData(2), new AtlasRectanglesData(3), new AtlasRectanglesData(4)];
+				
+			//clear(atlasDatas[0]);
 		}
 		//--------------------------------------------------------------------------
 		//
@@ -201,24 +194,26 @@ package util {
 		
 		public function packRectangles(rectangles:Vector.<PackerRectangle>, padding:int = 0, sort:int = 2):Boolean 
 		{
-			
 			if (sort != 0) 
 				rectangles.sort(((sort == 1) ? this.sortOnHeightAscending : this.sortOnHeightDescending));
 				
 			totalPacketRectangles = 0;
 			atlasUsed = 0;
+			var failedRectangles:Vector.<PackerRectangle> = new Vector.<PackerRectangle>();
+			var currentAtlasData:AtlasRectanglesData;
 				
 			while (rectangles.length > totalPacketRectangles)
 			{
 				var count:int = rectangles.length;
-				var success:Boolean = true;
+				var success:Boolean = false;
 				
-				var failedRectangles:Vector.<PackerRectangle> = new Vector.<PackerRectangle>();
+				//failedRectangles.length = 0;
 				
-				var currentAtlasData:AtlasRectanglesData = atlasDatas[atlasUsed];
+				currentAtlasData = atlasDatas[atlasUsed];
 				atlasUsed++;
 				
-				var _g:int = 0;
+				//никогда не будет работать пок аесть авто экспанд, т.к атлас экспандится с 1х1
+				/*var _g:int = 0;
 				while (_g < count) 
 				{
 					var i:int = _g++;
@@ -233,7 +228,8 @@ package util {
 						failedRectangles.push(rectangles[i]);
 						
 					success = success && s;
-				}
+				}*/
+				failedRectangles = rectangles;
 				
 				if (!success && this._autoExpand) 
 				{
@@ -244,63 +240,84 @@ package util {
 						storedRectangles.sort(((this._sortOnExpand == 1) ? this.sortOnHeightAscending : this.sortOnHeightDescending));
 						
 					var minimalArea:int = this.getRectanglesArea(storedRectangles);
+					trace("minimal area", minimalArea);
 					
-					//смотрит площадь minimalArea и если она меньше уже заданной _width, _height расширает ее вплоть до maxWidth, maxHeight
-					do 
-					{
-						if ((currentAtlasData.width <= currentAtlasData.height || currentAtlasData.height == this._maxHeight) && currentAtlasData.width < this._maxWidth) 
-						{	
-							if (this._forceValidTextureSizeOnExpand) 
-								currentAtlasData.width = currentAtlasData.width * 2;
-							else 
-								currentAtlasData.width = currentAtlasData.width + 1;
-						}
-						else
+					var isMaxAreaUsed:Boolean = minimalArea >= _maxWidth * _maxHeight;
+					
+					//если минимал арея больше или равна мксимальному размеру атласа то можно срзу атлас делать максимального размера
+					if (isMaxAreaUsed) {
+						currentAtlasData.width = _maxWidth;
+						currentAtlasData.height = _maxHeight;
+					} else {
+						//смотрит площадь minimalArea и если она меньше уже заданной _width, _height расширает ее вплоть до maxWidth, maxHeight
+						do 
 						{
-							if (this._forceValidTextureSizeOnExpand) 
-								currentAtlasData.height = currentAtlasData.height * 2;
-							else 
-								currentAtlasData.height = currentAtlasData.height + 1
+							if ((currentAtlasData.width <= currentAtlasData.height || currentAtlasData.height == this._maxHeight) && currentAtlasData.width < this._maxWidth) 
+							{	
+								if (this._forceValidTextureSizeOnExpand) 
+									currentAtlasData.width = currentAtlasData.width * 2;
+								else 
+									currentAtlasData.width = currentAtlasData.width + 1;
+							}
+							else
+							{
+								if (this._forceValidTextureSizeOnExpand) 
+									currentAtlasData.height = currentAtlasData.height * 2;
+								else 
+									currentAtlasData.height = currentAtlasData.height + 1
+							}
+							
+							
 						}
-						
-						
+						while (currentAtlasData.width * currentAtlasData.height < minimalArea && (currentAtlasData.width < this._maxWidth || currentAtlasData.height < this._maxHeight));
 					}
-					while (currentAtlasData.width * currentAtlasData.height < minimalArea && (currentAtlasData.width < this._maxWidth || currentAtlasData.height < this._maxHeight));
 					
+					trace("expand atlas", currentAtlasData.width, currentAtlasData.height);
 					
 					this.clear(currentAtlasData);
 					success = this.addRectangles(storedRectangles, currentAtlasData, padding);
 					
-					//trace(_rectangles.length, storedRectangles.length);
-					
-					//если изначальная оценка оказалось не вреной и не смогли добавится все субтекстуры но еще есть место то расширяем атлас и добавляем еще
-					while (!success && (currentAtlasData.width < this._maxWidth || currentAtlasData.height < this._maxHeight)) 
-					{
-						if ((currentAtlasData.width <= currentAtlasData.height || currentAtlasData.height == this._maxHeight) && currentAtlasData.width < this._maxWidth) 
-						{
-							if (this._forceValidTextureSizeOnExpand) 
-								currentAtlasData.width = currentAtlasData.width * 2;
-							else
-								currentAtlasData.width = currentAtlasData.width + MaxRectPacker.nonValidTextureSizePrecision;
+					//Если атлас уже был увеличен до макисмальных размреов то нет мысла его расширять второй раз
+					if (!isMaxAreaUsed) {
+						if (!success) {
+							trace('second expand', _maxWidth, _maxHeight);
 						}
-						else
-						{	
-							if (this._forceValidTextureSizeOnExpand) 
-								currentAtlasData.height = currentAtlasData.height * 2;
-							else
-								currentAtlasData.height = currentAtlasData.height + MaxRectPacker.nonValidTextureSizePrecision;
-						}	
 						
-						this.clear(currentAtlasData);
-						success = this.addRectangles(storedRectangles, currentAtlasData, padding);
+						//если изначальная оценка оказалось не вреной и не смогли добавится все субтекстуры но еще есть место то расширяем атлас и добавляем еще
+						while (!success && (currentAtlasData.width < this._maxWidth || currentAtlasData.height < this._maxHeight)) 
+						{
+							if ((currentAtlasData.width <= currentAtlasData.height || currentAtlasData.height == this._maxHeight) && currentAtlasData.width < this._maxWidth) 
+							{
+								if (this._forceValidTextureSizeOnExpand) 
+									currentAtlasData.width = currentAtlasData.width * 2;
+								else
+									currentAtlasData.width = currentAtlasData.width + MaxRectPacker.nonValidTextureSizePrecision;
+							}
+							else
+							{	
+								if (this._forceValidTextureSizeOnExpand) 
+									currentAtlasData.height = currentAtlasData.height * 2;
+								else
+									currentAtlasData.height = currentAtlasData.height + MaxRectPacker.nonValidTextureSizePrecision;
+							}	
+							
+							this.clear(currentAtlasData);
+							success = this.addRectangles(storedRectangles, currentAtlasData, padding);
+						}
 					}
 					
 					success = currentAtlasData.width <= this._maxWidth && currentAtlasData.height <= this._maxHeight;
 				}
 				
+				trace("success: " + (success? "атлас заполнен":"атлас прееполнен"));
+				
 				var length:int = currentAtlasData.rectangles.length;
+				totalPacketRectangles += length;
 				for (var k:int = 0; k < length; k++)
 				{
+					if (alreadyPackedMap[currentAtlasData.rectangles[k].id] != null) {
+						trace("reactangle is already packed", currentAtlasData.rectangles[k].id);
+					}
 					alreadyPackedMap[currentAtlasData.rectangles[k].id] = true;
 				}
 			}
@@ -349,6 +366,8 @@ package util {
 			var _g1:int = 0;
 			var _g:int = rectangles.length;
 			
+			bitmapData.lock();
+			
 			while (_g1 < _g) 
 			{
 				var i:int = _g1++;
@@ -359,6 +378,8 @@ package util {
 				
 				bitmapData.copyPixels(rect.bitmapData, DRWAING_RECT, DRAWING_POINT);
 			}
+			
+			bitmapData.unlock();
 		}
 
 		//--------------------------------------------------------------------------
@@ -374,8 +395,10 @@ package util {
 			var area:int = 0;
 			var i:int = rectangles.length - 1;
 			while (i >= 0) {
-				area += rectangles[i].width * rectangles[i].height;
-				i--;
+				var rect:PackerRectangle = rectangles[i--];
+				if (alreadyPackedMap[rect.id] != null)
+					continue;
+				area += rect.width * rect.height;
 			}
 			return area;
 		}
@@ -383,7 +406,7 @@ package util {
 		/**
 		 * @private
 		 */
-		protected function addRectangles(rectangles:Vector.<PackerRectangle>, atlasData:AtlasRectanglesData, padding:int = 0, force:Boolean = true):Boolean 
+		protected function addRectangles(rectangles:Vector.<PackerRectangle>, atlasData:AtlasRectanglesData, padding:int = 0):Boolean 
 		{
 			var count:int = rectangles.length;
 			var success:Boolean = true;
@@ -393,9 +416,13 @@ package util {
 			{
 				var i:int = _g++;
 				var rect:PackerRectangle = rectangles[i];
+				
+				if (alreadyPackedMap[rect.id] != null)
+					continue;
+						
 				success = success && this.addRectangle(rect, padding, atlasData);
 				
-				if (!success && !force) 
+				if (!success) 
 					return false;
 			}
 			
@@ -411,6 +438,7 @@ package util {
 			
 			if (area != null) 
 			{
+				//trace("add rectangle", rect.id, area);
 				rect.set(area.x, area.y, rect.width + (padding - rect.padding) * 2, rect.height + (padding - rect.padding) * 2);
 				rect.padding = padding;
 				this.splitAvailableAreas(rect);
@@ -418,7 +446,8 @@ package util {
 				if (padding != 0) rect.setPadding(0);
 				
 				atlasData.rectangles.push(rect);
-				totalPacketRectangles++;
+			} else {
+				//trace("fail to add rectangle", rect.id, rect.width, rect.height);
 			}
 			
 			return area != null;

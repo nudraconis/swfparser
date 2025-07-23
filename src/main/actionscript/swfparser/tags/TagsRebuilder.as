@@ -3,7 +3,11 @@ package swfparser.tags
 	import com.codeazur.as3swf.data.filters.IFilter;
 	import com.codeazur.as3swf.data.SWFSymbol;
 	import com.codeazur.as3swf.tags.ITag;
+	import com.codeazur.as3swf.tags.TagDefineButton;
+	import com.codeazur.as3swf.tags.TagDefineEditText;
 	import com.codeazur.as3swf.tags.TagDefineSprite;
+	import com.codeazur.as3swf.tags.TagDefineText;
+	import com.codeazur.as3swf.tags.TagDefineText2;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagPlaceObject;
 	import com.codeazur.as3swf.tags.TagPlaceObject2;
@@ -20,12 +24,15 @@ package swfparser.tags
 	import swfdata.ColorMatrix;
 	import swfdata.dataTags.RawClassSymbol;
 	import swfdata.dataTags.SwfPackerTag;
+	import swfdata.dataTags.SwfPackerTagDefineButton;
 	import swfdata.dataTags.SwfPackerTagDefineSprite;
 	import swfdata.dataTags.SwfPackerTagEnd;
 	import swfdata.dataTags.SwfPackerTagPlaceObject;
 	import swfdata.dataTags.SwfPackerTagRemoveObject;
 	import swfdata.dataTags.SwfPackerTagShowFrame;
 	import swfdata.dataTags.SwfPackerTagSymbolClass;
+	import swfdata.dataTags.SwfPackerEmptyTag;
+	import swfdata.dataTags.SwfPackerTagDefineText;
 	import swfdata.FrameData;
 
 	public class TagsRebuilder 
@@ -49,6 +56,59 @@ package swfparser.tags
 			tagsProcessors[TagShowFrame.TYPE] = createShowFrameTag;
 			
 			tagsProcessors[TagSymbolClass.TYPE] = createSymbolClassTag;
+			
+			tagsProcessors[TagDefineEditText.TYPE] = createDefineTextTag;
+			
+			
+			//tagsProcessors[TagDefineText.TYPE] = createDefineTextTag;
+			//tagsProcessors[TagDefineText2.TYPE] = createDefineTextTag;
+		}
+		
+		private function createEmptyTag(tag:TagDefineText):SwfPackerTag 
+		{
+			return new SwfPackerEmptyTag();
+		}
+		
+		private function createDefineTextTag(tag:TagDefineEditText):SwfPackerTag 
+		{
+			var tagOut:SwfPackerTagDefineText = new SwfPackerTagDefineText();
+			
+			if (tag.characterId == 0)
+				internal_error("wrong?");
+			
+			tagOut.characterId = tag.characterId;
+			tagOut.variableName = tag.variableName;
+			tagOut.bounds = tag.bounds.rect;
+			tagOut.hasText = tag.hasText;
+			tagOut.wordWrap = tag.wordWrap;
+			tagOut.multiline = tag.multiline;
+			tagOut.password = tag.password;
+			tagOut.readOnly = tag.readOnly;
+			tagOut.hasTextColor = tag.hasTextColor;
+			tagOut.hasMaxLength = tag.hasMaxLength;
+			tagOut.hasFont = tag.hasFont;
+			tagOut.hasFontClass = tag.hasFontClass;
+			tagOut.autoSize = tag.autoSize;
+			tagOut.hasLayout = tag.hasLayout;
+			tagOut.noSelect = tag.noSelect;
+			tagOut.border = tag.border;
+			tagOut.wasStatic = tag.wasStatic;
+			tagOut.html = tag.html;
+			tagOut.useOutlines = tag.useOutlines;
+			
+			tagOut.fontId = tag.fontId;
+			tagOut.fontClass = tag.fontClass;
+			tagOut.fontHeight = tag.fontHeight;
+			tagOut.textColor = tag.textColor;
+			tagOut.maxLength = tag.maxLength;
+			tagOut.align = tag.align;
+			tagOut.leftMargin = tag.leftMargin;
+			tagOut.rightMargin = tag.rightMargin;
+			tagOut.indent = tag.indent;
+			tagOut.leading = tag.leading;
+			tagOut.initialText = tag.initialText;
+			
+			return tagOut;
 		}
 		
 		private function createEndTag(tag:TagEnd):SwfPackerTag 

@@ -1,13 +1,16 @@
 package swfparser 
 {
 	import com.codeazur.as3swf.SWF;
-	import swfDataExporter.AS3GraphicsDataShapeExporter;
 	import com.codeazur.as3swf.tags.ITag;
 	import com.codeazur.as3swf.tags.TagDefineBits;
 	import com.codeazur.as3swf.tags.TagDefineBitsJPEG2;
 	import com.codeazur.as3swf.tags.TagDefineBitsJPEG3;
+	import com.codeazur.as3swf.tags.TagDefineBitsJPEG4;
 	import com.codeazur.as3swf.tags.TagDefineBitsLossless;
 	import com.codeazur.as3swf.tags.TagDefineBitsLossless2;
+	import com.codeazur.as3swf.tags.TagDefineButton;
+	import com.codeazur.as3swf.tags.TagDefineButton2;
+	import com.codeazur.as3swf.tags.TagDefineEditText;
 	import com.codeazur.as3swf.tags.TagDefineMorphShape;
 	import com.codeazur.as3swf.tags.TagDefineMorphShape2;
 	import com.codeazur.as3swf.tags.TagDefineShape;
@@ -15,6 +18,8 @@ package swfparser
 	import com.codeazur.as3swf.tags.TagDefineShape3;
 	import com.codeazur.as3swf.tags.TagDefineShape4;
 	import com.codeazur.as3swf.tags.TagDefineSprite;
+	import com.codeazur.as3swf.tags.TagDefineText;
+	import com.codeazur.as3swf.tags.TagDefineText2;
 	import com.codeazur.as3swf.tags.TagEnd;
 	import com.codeazur.as3swf.tags.TagPlaceObject;
 	import com.codeazur.as3swf.tags.TagPlaceObject2;
@@ -27,14 +32,17 @@ package swfparser
 	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	import flash.utils.ByteArray;
+	import swfDataExporter.AS3GraphicsDataShapeExporter;
 	import swfdata.BitmapLibrary;
 	import swfdata.ShapeLibrary;
 	import swfdata.SymbolsLibrary;
 	import swfdata.atlas.AtlasDrawer;
+	import swfdata.atlas.AtlasDrawerUtils;
 	import swfdata.atlas.BitmapTextureAtlas;
 	import swfdata.dataTags.SwfPackerTag;
 	import swfparser.tags.TagProcessorBase;
 	import swfparser.tags.TagProcessorDefineSprite;
+	import swfparser.tags.TagProcessorTextFieldDefinition;
 	import swfparser.tags.TagProcessorEnd;
 	import swfparser.tags.TagProcessorPlaceObject;
 	import swfparser.tags.TagProcessorRemoveObject;
@@ -42,6 +50,7 @@ package swfparser
 	import swfparser.tags.TagProcessorShowFrame;
 	import swfparser.tags.TagProcessorSymbolClass;
 	import swfparser.tags.TagsRebuilder;
+	import utils.BitMask;
 
 	[Event(name="complete", type="flash.events.Event")]
 	public class SwfDataParser extends EventDispatcher implements ISWFDataParser
@@ -53,6 +62,7 @@ package swfparser
 		
 		private var swfTagsParser:SWF;
 		private var tagProcessorShapeDefinition:TagProcessorShapeDefinition;
+		private var tagProcessorDefineText:TagProcessorTextFieldDefinition;
 		private var tagsRebuilder:TagsRebuilder = new TagsRebuilder();
 		private var bitmapTagsParser:BitmapTagsParser;
 		
@@ -60,15 +70,15 @@ package swfparser
 		private var drawAdditionalAA:Boolean;
 		private var atlasSize:int;
 		
-		//1 - contain morph, 2 - contain bitmaps, 3 - contain bitmaps and morph
-		public var erroStatus:int;
+		//0 bit - contain morph, 1 - contain buttons, 2 - contain text
+		public var errorStatus:BitMask = new BitMask(0);
 		
 		/**
 		 * 
 		 * @param	onlyTagsReport - only check for unsupported tags/errors
 		 * @param	atlasSize
 		 */
-		public function SwfDataParser(onlyTagsReport:Boolean = false, atlasSize:int = 2048) 
+		public function SwfDataParser(onlyTagsReport:Boolean = false, atlasSize:int = 12000) 
 		{
 			this.atlasSize = atlasSize;
 			this.onlyTagsReport = onlyTagsReport;
@@ -102,8 +112,10 @@ package swfparser
 			
 			packerTags.length = 0;
 			
-			if(context.atlasDrawer == null)
+			if (context.atlasDrawer == null) 
+			{
 				context.atlasDrawer = new AtlasDrawer(new BitmapTextureAtlas(atlasSize, atlasSize, 4), 1, 4);
+			}
 			else
 			{
 				context.atlasDrawer.clean();
@@ -146,7 +158,7 @@ package swfparser
 			bitmapTagsParser = new BitmapTagsParser(context);
 			bitmapTagsParser.addEventListener(Event.COMPLETE, onBitmapTagsFinish);
 			
-			erroStatus = 0;
+			errorStatus.reset();
 		}
 		
 		private function makeTagProcessorsMap():void 
@@ -166,23 +178,26 @@ package swfparser
 			tagsProcessors[TagPlaceObject3.TYPE] = tagProcessorPlaceObject;
 			tagsProcessors[TagPlaceObject4.TYPE] = tagProcessorPlaceObject;
 			
+			tagProcessorDefineText = new TagProcessorTextFieldDefinition(context);
+			tagsProcessors[TagDefineEditText.TYPE] = tagProcessorDefineText;
 			
 			tagProcessorShapeDefinition = new TagProcessorShapeDefinition(context, new AS3GraphicsDataShapeExporter(swfTagsParser, context.bitmapLibrary));
 			//tagsProcessors[TagDefineShape.TYPE] = tagProcessorShapeDefinition;
 			//tagsProcessors[TagDefineShape2.TYPE] = tagProcessorShapeDefinition;
 			//tagsProcessors[TagDefineShape3.TYPE] = tagProcessorShapeDefinition;
-			
 			//tagsProcessors[TagDefineShape4.TYPE] = tagProcessorShapeDefinition;
+			
 			tagsProcessors[TagShowFrame.TYPE] = new TagProcessorShowFrame(context);
 			
 			tagsProcessors[TagSymbolClass.TYPE] = new TagProcessorSymbolClass(context);
 		}
 		
-		public function parseSwf(data:ByteArray, drawAdditionalAA:Boolean):void
+		public function parseSwf(data:ByteArray, drawAdditionalAA:Boolean):int
 		{
 			this.drawAdditionalAA = drawAdditionalAA;
 			swfTagsParser.loadBytes(data);
 			processData();
+			return 0;
 		}
 		
 		private function checkForUnsopportedTags():void
@@ -197,12 +212,23 @@ package swfparser
 					tagsMap[swfTagsParser.tags[i]["constructor"]]++;
 			}
 			
+			if (tagsMap[TagDefineButton] != null || tagsMap[TagDefineButton2] != null ||
+				tagsMap[TagDefineButton] != null || tagsMap[TagDefineButton2] != null) {
+					errorStatus.setBit(1);
+					internal_error("Found button tags");
+				}
+				
+			if (tagsMap[TagDefineText] != null || tagsMap[TagDefineText2] != null) {
+				internal_error("Found text tags");
+				errorStatus.setBit(2);
+			}
+
 			if (tagsMap[TagDefineMorphShape] != null || tagsMap[TagDefineMorphShape2] != null)
-				erroStatus += 1;
+				errorStatus.setBit(0);
 		}
 		
 		private function processData():void 
-		{	
+		{
 			if (swfTagsParser.tags.length == 0)
 				internal_trace("Error: NO TAGS PROCESSED");
 				
@@ -215,10 +241,11 @@ package swfparser
 			
 			for (var i:int = 0; i < swfTagsParser.tags.length; i++)
 			{
+				
 				var currentTag:ITag = swfTagsParser.tags[i];
 				var tagType:uint = currentTag.type;
 				
-				if (tagType == TagDefineBits.TYPE || tagType == TagDefineBitsJPEG2.TYPE || tagType == TagDefineBitsJPEG3.TYPE || tagType == TagDefineBitsLossless.TYPE || tagType == TagDefineBitsLossless2.TYPE)
+				if (tagType == TagDefineBits.TYPE || tagType == TagDefineBitsJPEG2.TYPE || tagType == TagDefineBitsJPEG3.TYPE || tagType == TagDefineBitsJPEG4.TYPE || tagType == TagDefineBitsLossless.TYPE || tagType == TagDefineBitsLossless2.TYPE)
 				{
 					bitmapTags.push(currentTag);
 				}
@@ -243,19 +270,29 @@ package swfparser
 				{
 					tagProcessorShapeDefinition.processTag(currentTag);
 				}
+				
+				//if (currentTag.type == TagDefineEditText.TYPE)
+				//{
+				//	tagProcessorDefineText.processTag(currentTag);
+				//}
 			}
+			
 			
 			tagsRebuilder.rebuildTags(swfTagsParser.tags, packerTags);
 			
 			processDisplayObject(packerTags);
 			
 			context.shapeLibrary.drawToAtlas(context.atlasDrawer, drawAdditionalAA);
-			
 			finish();
 		}
 		
 		private function finish():void
 		{
+			AtlasDrawerUtils.clear();
+			bitmapTagsParser.clear();
+			context.bitmapLibrary.clear(true);
+			//clear();
+			
 			dispatchEvent(new Event(Event.COMPLETE));
 		}
 		
@@ -264,7 +301,6 @@ package swfparser
 			for (var i:int = 0; i < tags.length; i++)
 			{
 				var currentTag:SwfPackerTag = tags[i];
-				
 				
 				var tagProcessor:TagProcessorBase = tagsProcessors[currentTag.type];
 				

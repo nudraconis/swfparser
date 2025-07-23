@@ -1,6 +1,7 @@
 package swfDataExporter 
 {
 	import fastByteArray.IByteArray;
+	import swfdata.dataTags.SwfPackerTagDefineText;
 	
 	import swfdata.dataTags.SwfPackerTag;
 	import swfdata.dataTags.SwfPackerTagDefineSprite;
@@ -46,7 +47,8 @@ package swfDataExporter
 		
 		public function importTags(tags:Vector.<SwfPackerTag>, input:IByteArray):void 
 		{
-			
+			//trace("==========================");
+			//trace("import tags");
 			var index:int = 0;
 			while (input.position != input.length)
 			{
@@ -57,12 +59,14 @@ package swfDataExporter
 				
 				tags[index++] = tag;
 			}
+			//trace("==========================");
 		}
 		
 		[Inline]
 		public final function importSingleTag(input:IByteArray):SwfPackerTag
 		{
 			var tagType:int = input.readInt8();
+			//trace("tag", tagType);
 			
 			var importer:SwfPackerTagExporter = importers[tagType];
 			
@@ -86,17 +90,19 @@ package swfDataExporter
 			importers[ExporerTypes.END] 			= exporters[0] 		= new SwfPackerTagExporter(ExporerTypes.END);
 			importers[ExporerTypes.SHOW_FRAME] 		= exporters[1] 		= new SwfPackerTagExporter(ExporerTypes.SHOW_FRAME);
 			
-			importers[ExporerTypes.DEFINE_SPRITE] 	= exporters[39]	= new DefineSpriteExporter(this);
-			importers[ExporerTypes.PLACE_OBJECT]	= exporters[4]	= new PlaceObjectExporter();
-			importers[ExporerTypes.REMOVE_OBJECT] 	= exporters[5]	= new RemoveObjectExporter();
-			importers[ExporerTypes.SYMBOL_CLASS] 	= exporters[76]	= new SymbolClassExporter();
+			importers[ExporerTypes.DEFINE_TEXT_FIELD] 	= exporters[37]	= new DefineTextFieldExporter();
+			importers[ExporerTypes.DEFINE_SPRITE] 		= exporters[39]	= new DefineSpriteExporter(this);
+			importers[ExporerTypes.PLACE_OBJECT]		= exporters[4]	= new PlaceObjectExporter();
+			importers[ExporerTypes.REMOVE_OBJECT] 		= exporters[5]	= new RemoveObjectExporter();
+			importers[ExporerTypes.SYMBOL_CLASS] 		= exporters[76]	= new SymbolClassExporter();
 			
-			tagConstructorsObject[ExporerTypes.END]				= SwfPackerTagEnd;
-			tagConstructorsObject[ExporerTypes.SHOW_FRAME]		= SwfPackerTagShowFrame;
-			tagConstructorsObject[ExporerTypes.DEFINE_SPRITE]	= SwfPackerTagDefineSprite;
-			tagConstructorsObject[ExporerTypes.PLACE_OBJECT]	= SwfPackerTagPlaceObject;
-			tagConstructorsObject[ExporerTypes.REMOVE_OBJECT]	= SwfPackerTagRemoveObject;
-			tagConstructorsObject[ExporerTypes.SYMBOL_CLASS]	= SwfPackerTagSymbolClass;
+			tagConstructorsObject[ExporerTypes.END]					= SwfPackerTagEnd;
+			tagConstructorsObject[ExporerTypes.SHOW_FRAME]			= SwfPackerTagShowFrame;
+			tagConstructorsObject[ExporerTypes.DEFINE_TEXT_FIELD]	= SwfPackerTagDefineText;
+			tagConstructorsObject[ExporerTypes.DEFINE_SPRITE]		= SwfPackerTagDefineSprite;
+			tagConstructorsObject[ExporerTypes.PLACE_OBJECT]		= SwfPackerTagPlaceObject;
+			tagConstructorsObject[ExporerTypes.REMOVE_OBJECT]		= SwfPackerTagRemoveObject;
+			tagConstructorsObject[ExporerTypes.SYMBOL_CLASS]		= SwfPackerTagSymbolClass;
 		}
 	}
 }

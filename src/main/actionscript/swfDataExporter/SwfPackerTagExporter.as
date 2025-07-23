@@ -15,7 +15,6 @@ package swfDataExporter
 		
 		public function exportTag(tag:SwfPackerTag, output:IByteArray):void
 		{
-			
 			output.writeInt8(type);
 		}
 		

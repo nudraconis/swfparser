@@ -1,17 +1,7 @@
-////////////////////////////////////////////////////////////////////////////////
-//
-//  © 2014 CrazyPanda LLC
-//
-////////////////////////////////////////////////////////////////////////////////
 package util {
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 
-	/**
-	 * @author                    Obi
-	 * @langversion                3.0
-	 * @date                    27.11.2014
-	 */
 	public class PackerRectangle {
 		
 
@@ -152,6 +142,10 @@ package util {
 
 		public function getRect():Rectangle {
 			return new Rectangle(this.x, this.y, this.width, this.height);
+		}
+		
+		public function toString():String {
+			return "PackerRectangle(" + x + ", " + y + ", " + width + ", " + height + ")";
 		}
 	}
 }

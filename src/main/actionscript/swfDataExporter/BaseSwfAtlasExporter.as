@@ -1,16 +1,24 @@
 package swfDataExporter 
 {
+	import com.codeazur.as3swf.utils.ColorUtils;
 	import fastByteArray.ByteArrayUtils;
 	import fastByteArray.Constants;
+	import fastByteArray.FastByteArray;
 	import fastByteArray.IByteArray;
+	import fastByteArray.SlowByteArray;
+	import flash.display.Bitmap;
 	import flash.display.BitmapData;
 	import flash.geom.Rectangle;
 	import flash.utils.ByteArray;
+	import flash.utils.CompressionAlgorithm;
+	import startup.StartUp;
 	import swfdata.ShapeLibrary;
 	import swfdata.atlas.BaseSubTexture;
 	import swfdata.atlas.BaseTextureAtlas;
 	import swfdata.atlas.BitmapTextureAtlas;
 	import swfdata.atlas.TextureTransform;
+	import util.PackerHelper;
+	import flash.display.PNGEncoderOptions;
 	
 	public class BaseSwfAtlasExporter implements ISwfAtlasExporter
 	{
@@ -19,61 +27,6 @@ package swfDataExporter
 		public function BaseSwfAtlasExporter() 
 		{
 			
-		}
-		
-		public static function roundPixels20(pixels:Number):Number {
-			return Math.round(pixels * 100) / 100;
-		}
-		
-		public function readRectangle(input:IByteArray):Rectangle 
-		{
-			//var bits:uint = input.readBits(5);
-			
-			
-			var rect:Rectangle = new Rectangle();
-			
-			//rect.x = (input.readBits(bits));
-			//rect.width = (input.readBits(bits));
-			//rect.y = (input.readBits(bits));
-			//rect.height = (input.readBits(bits));
-			
-			
-			rect.x = roundPixels20(input.readInt32() / 20);
-			rect.width = roundPixels20(input.readInt32() / 20);
-			rect.y = roundPixels20(input.readInt32() / 20);
-			rect.height = roundPixels20(input.readInt32() / 20);
-			
-			//trace('read rect', rect);
-			
-			//trace('read rectangle', rect);
-			
-			return rect;
-		}
-		
-		public function writeRectangle(rectangle:Rectangle, output:IByteArray):void 
-		{
-			var xmin:int = rectangle.x * 20;
-			var xmax:int = rectangle.width * 20;
-			var ymin:int = rectangle.y * 20;
-			var ymax:int = rectangle.height * 20;
-			
-			//if (xmin < 0 || ymin < 0 || xmax < 0 || ymax < 0)
-				//throw new Error("value range error: " + xmin + ", " + ymin + ", " + xmax + ", " + ymax);
-			
-			var numBits:uint = ByteArrayUtils.calculateMaxBits4(true, xmin, xmax, ymin, ymax);
-			
-			//output.writeBits(numBits, 5);
-			//output.writeBits(xmin, numBits);
-			//output.writeBits(xmax, numBits);
-			//output.writeBits(ymin, numBits);
-			//output.writeBits(ymax, numBits);
-			
-			output.writeInt32(xmin);
-			output.writeInt32(xmax);
-			output.writeInt32(ymin);
-			output.writeInt32(ymax);
-			//trace('write rect', rectangle);
-			//trace('write rectangle', numBits, rectangle);
 		}
 		
 		public function readTextureTransform(input:IByteArray):TextureTransform
@@ -161,24 +114,64 @@ package swfDataExporter
 		public function exportAtlas(atlas:BitmapTextureAtlas, shapesList:ShapeLibrary, output:IByteArray):void 
 		{
 			var bitmap:BitmapData = atlas.data;
+			
 			var bitmapBytes:ByteArray = bitmap.getPixels(bitmap.rect);
+			bitmapBytes.position = 0;
+			
+			trace("export atlas", bitmap.width, bitmap.height);
 			
 			if (bitmap.width < 2 || bitmap.height < 2)
 				internal_trace("Error: somethink wrong with atlas data");
 			
+			var pixelsCount:int = bitmap.width * bitmap.height;
+			var colorDataBytes:ByteArray = new ByteArray();
+			colorDataBytes.length = pixelsCount * 2;
+			var bit:int = 15;
+			var colorConversionMultiplier:Number = 0.05882352941;//1 / 255 * bit;
+			//4 4 4 4
+			
+			for (var i = 0; i < pixelsCount; i++) {
+				var color:uint = bitmapBytes.readUnsignedInt();
+				var r:uint = color >> 16 & 255;
+				var g:uint = color >> 8 & 255;
+				var b:uint = color & 255;
+				var a:uint = color >> 24 & 255;
+				
+				//r = Math.round(r * colorConversionMultiplier);
+				//g = Math.round(g * colorConversionMultiplier);
+				//b = Math.round(b * colorConversionMultiplier);
+				//a = Math.round(a * colorConversionMultiplier);
+				
+				//color = b | g << 4 | r << 8 | a << 12;
+				color = b >> 4 | g >> 4 << 4 | r >> 4 << 8 | a >> 4 << 12;
+				colorDataBytes.writeShort(color);
+			}
+			
 			output.writeInt8(atlas.padding);
-			output.writeInt32(bitmapBytes.length);
+			//output.writeInt32(colors.length);
+			//output.writeInt32(alpha.length);
+			output.writeInt32(colorDataBytes.length);
 			output.writeInt16(bitmap.width);
 			output.writeInt16(bitmap.height);
 			
-			output.writeBytes(bitmapBytes, 0, bitmapBytes.length);
+			trace("write atlas", bitmap.width, bitmap.height, colorDataBytes.length);
+			//trace("write atlas", bitmap.width, bitmap.height, colors.length, alpha.length);
+			//output.writeBytes(colors.byteArray, 0, colors.length);
+			//output.writeBytes(alpha.byteArray, 0, alpha.length);
+			colorDataBytes.position = 0;
+			output.writeBytes(colorDataBytes, 0, colorDataBytes.length);
+			//colors.clear();
+			//alpha.clear();
+			colorDataBytes.clear();
 			
 			output.writeInt16(atlas.texturesCount);
+			trace('write texturesCount', atlas.texturesCount);
 			
 			//trace('pre write', output.position);
 			
 			for each(var texture:BaseSubTexture in atlas.subTextures)
 			{
+				//trace('write texture', texture.id);
 				output.writeInt16(texture.id);
 				
 				writeTextureTransform(texture.transform, output);
@@ -188,12 +181,29 @@ package swfDataExporter
 				
 				//trace('write', output.position);
 			}
+			
+			bitmapBytes.clear();
 			//output.end(false);
 		}
 		
 		public function importAtlas(name:String, input:IByteArray, shapesList:ShapeLibrary, format:String):BaseTextureAtlas 
 		{
 			return null;
+		}
+		
+		
+		/* INTERFACE swfDataExporter.ISwfAtlasExporter */
+		
+		[Inline]
+		final public function readRectangle(input:IByteArray):Rectangle 
+		{
+			return PackerHelper.readRectangle(input);
+		}
+		
+		[Inline]
+		final public function writeRectangle(rectangle:Rectangle, output:IByteArray):void 
+		{
+			PackerHelper.writeRectangle(rectangle, output);
 		}
 	}
 }

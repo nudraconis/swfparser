@@ -7,6 +7,7 @@ package swfparser.tags
 	import swfdata.MovieClipData;
 	import swfdata.ShapeData;
 	import swfdata.SpriteData;
+	import swfdata.TextFieldData;
 	import swfdata.Timeline;
 	import swfdata.swfdata_inner;
 	import swfdata.dataTags.SwfPackerTag;
@@ -47,7 +48,7 @@ package swfparser.tags
 				
 				if (!displayObject)
 				{
-					internal_error("Error: no symbol for linkage(symbol=" + currentCharacterId + ", linkage=" + currentLinkage + ")");
+					internal_error("Error: 1no symbol for linkage(symbol=" + currentCharacterId + ", linkage=" + currentLinkage + ")");
 					continue;
 				}
 				
@@ -72,6 +73,10 @@ package swfparser.tags
 			else if (processedDisplayObject.displayObjectType == DisplayObjectTypes.SHAPE_TYPE)
 			{
 				calculeteShapeTransform(processedDisplayObject as ShapeData, parentTransform);
+			}
+			else if (processedDisplayObject.displayObjectType == DisplayObjectTypes.TEXT_FIELD_TYPE)
+			{
+				//calculateTextFieldTransform(processedDisplayObject as TextFieldData, parentTransform);
 			}
 			else 
 			{
@@ -138,6 +143,13 @@ package swfparser.tags
 		{
 			GeomMath.concatMatrices(shapeData.transform, parentTransform, SHAPE_HELPER_MATRIX);
 			context.shapeLibrary.getShape(shapeData.characterId).checkTransform2(SHAPE_HELPER_MATRIX, shapeData.tx, shapeData.ty);
+		}
+		
+		private function calculateTextFieldTransform(textFieldData:TextFieldData, parentTransform:Matrix):void 
+		{
+			var sceneTransform:PooledMatrix = PooledMatrix.get(1, 0, 0, 1, 0, 0);
+			
+			GeomMath.concatMatrices(textFieldData.transform, parentTransform, sceneTransform);
 		}
 	}
 }

@@ -3,6 +3,9 @@ package swfDataExporter
 	import com.codeazur.as3swf.SWF;
 	import com.codeazur.as3swf.exporters.core.DefaultShapeExporter;
 	import flash.display.GraphicsBitmapFill;
+	import flash.display.GraphicsPathWinding;
+	import flash.geom.Point;
+	import flash.geom.Rectangle;
 	import swfdata.BitmapLibrary;
 	
 	import flash.display.CapsStyle;
@@ -66,9 +69,11 @@ package swfDataExporter
 			));
 		}
 
-		override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {
+		override public function beginBitmapFill(bitmapId:uint, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false):void {			
 			cleanUpGraphicsPath();
-			_graphicsData.push(new GraphicsBitmapFill(bitmapLibrary.getBitmap(bitmapId), matrix, repeat, smooth));
+			//lineStyle();
+			//trace("fill bitmap: " + bitmapId);
+			_graphicsData.push(new GraphicsBitmapFill(bitmapLibrary.getBitmap(bitmapId).clone(), matrix, repeat, smooth));
 		}
 		
 		override public function endFill():void {
@@ -133,7 +138,7 @@ package swfDataExporter
 			if(tmpGraphicsPath && tmpGraphicsPath.commands && tmpGraphicsPath.commands.length > 0) {
 				_graphicsData.push(tmpGraphicsPath);
 			}
-			tmpGraphicsPath = new GraphicsPath();
+			tmpGraphicsPath = new GraphicsPath(null, null);
 			tmpStroke = null;
 		}
 	}

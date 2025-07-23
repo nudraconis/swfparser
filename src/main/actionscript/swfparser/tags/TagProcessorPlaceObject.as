@@ -90,13 +90,13 @@ package swfparser.tags
 			
 			if(placedDO == null)
 			{
-				internal_error("Дисплей объект не определен в библиотеке символов " + id);
+				internal_error("Дисплей объект не определен в библиотеке символов " + id, tag);
 			}
 			
 			return placedDO;
 		}
 		
-		private function getObjectFromLibrary(id:int, isNeedClone:Boolean):DisplayObjectData
+		private function getObjectFromLibrary(id:int, isNeedClone:Boolean, tag:SwfPackerTag):DisplayObjectData
 		{
 			var placedDO:DisplayObjectData;
 			var prototype:DisplayObjectData;
@@ -113,7 +113,7 @@ package swfparser.tags
 				else
 				{
 
-					internal_error("Дисплей объект не определен в библиотеке символов " + id);
+					internal_error("Дисплей объект не определен в библиотеке символов " + id, tag);
 				}
 			}
 			else
@@ -193,7 +193,7 @@ package swfparser.tags
 				//положили объект в таймлайн в первый раз скорее всего поэтому тут поидеи есть чарактер айди и можно взять его из библиотеки
 				//placedDO = getObjectFromLibrary(tagPlaceObject.characterId, isNeedClone);
 				//Вот тут в оригинале не клонировалось, если была колорматрица, нужно ли клонировать с блендом?
-				placedDO = getObjectFromLibrary(tagPlaceObject.characterId, isNeedClone);
+				placedDO = getObjectFromLibrary(tagPlaceObject.characterId, isNeedClone, tag);
 				
 				if (!placedDO)//но его там может не быть т.к морфы не парсятся к примеру
 					return;
@@ -284,6 +284,8 @@ package swfparser.tags
 			
 			if (tagPlaceObject.hasClipDepth)
 			{
+				internal_error("contain mask");
+				trace("### MASK ###");
 				placedDO.isMask = true;
 				placedDO.clipDepth = tagPlaceObject.clipDepth;
 			}
